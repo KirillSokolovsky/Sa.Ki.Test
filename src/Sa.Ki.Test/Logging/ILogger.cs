@@ -14,6 +14,8 @@
 
         void ERROR(string message, Exception exception = null);
 
+        void FILE(string message, byte[] fileBytes, string extension, bool isError);
+
         void ITEM(ILogItem logItem);
     }
 }

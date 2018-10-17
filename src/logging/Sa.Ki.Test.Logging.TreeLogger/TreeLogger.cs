@@ -55,6 +55,19 @@
             this.AddMessage(LogLevel.INFO, message);
         }
 
+        public void FILE(string message, byte[] fileBytes, string extension, bool isError)
+        {
+            var fileItem = new LogFile
+            {
+                Level = isError ? LogLevel.ERROR : LogLevel.INFO,
+                Message = message,
+                Timestamp = DateTime.UtcNow,
+                FileBytes = fileBytes,
+                Extension = extension
+            };
+            this.AddItem(fileItem);
+        }
+
         public void ITEM(ILogItem logItem)
         {
             AddItem(logItem);
