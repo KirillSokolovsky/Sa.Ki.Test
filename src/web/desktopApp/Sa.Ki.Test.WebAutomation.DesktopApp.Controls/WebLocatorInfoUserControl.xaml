@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="Sa.Ki.Test.WebAutomation.DesktopApp.Controls.WebLocatorInfoUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Controls"
+             xmlns:mdls="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Models;assembly=Sa.Ki.Test.WebAutomation.DesktopApp.Models"
+             xmlns:dacnv="clr-namespace:Sa.Ki.Test.DesktopApp.Converters;assembly=Sa.Ki.Test.DesktopApp"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        
+        <dacnv:InvertBoolConverter x:Key="NotCnv"></dacnv:InvertBoolConverter>
+
+        <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+            <Setter Property="Width" Value="90"></Setter>
+            <Setter Property="Padding" Value="5"></Setter>
+            <Setter Property="Margin" Value="0 0 5 0"></Setter>
+            <Setter Property="HorizontalContentAlignment" Value="Right"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        </Style>
+
+        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="MinWidth" Value="150"></Setter>
+            <Setter Property="Padding" Value="5"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsReadOnly}" Value="True">
+                    <Setter Property="Background" Value="Transparent"></Setter>
+                    <Setter Property="BorderThickness" Value="1 0 0 0"></Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Setter Property="Width" Value="150"></Setter>
+            <Setter Property="Padding" Value="5"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        </Style>
+
+        <Style TargetType="WrapPanel">
+            <Setter Property="Margin" Value="5 5 0 0"></Setter>
+        </Style>
+        
+    </UserControl.Resources>
+    
+    <Grid Name="LayoutRoot">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <WrapPanel Grid.Row="0">
+            <Label>Locator type:</Label>
+            <ComboBox ItemsSource="{Binding WebLocator.LocatorTypes, Mode=OneWay}"
+                      SelectedItem="{Binding WebLocator.LocatorType}"
+                      IsSynchronizedWithCurrentItem="True"
+                      IsEnabled="{Binding IsReadOnly, Converter={StaticResource NotCnv}}">
+            </ComboBox>
+        </WrapPanel>
+
+        <WrapPanel Grid.Row="1">
+            <Label>Locator value:</Label>
+            <TextBox Text="{Binding WebLocator.LocatorValue}"
+                     IsReadOnly="{Binding IsReadOnly}">
+            </TextBox>
+        </WrapPanel>
+
+        <WrapPanel Grid.Row="2">
+            <Label>Is relative?</Label>
+            <CheckBox IsChecked="{Binding WebLocator.IsRelative}"
+                      IsEnabled="{Binding IsReadOnly, Converter={StaticResource NotCnv}}"
+                      Padding="5"
+                      VerticalAlignment="Center">
+            </CheckBox>
+        </WrapPanel>
+        
+    </Grid>
+</UserControl>
