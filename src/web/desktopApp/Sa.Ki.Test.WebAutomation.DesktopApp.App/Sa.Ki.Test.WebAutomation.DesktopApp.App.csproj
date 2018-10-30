@@ -4,17 +4,19 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1707EB56-796E-4080-B035-7CA00D8A70C6}</ProjectGuid>
-    <OutputType>library</OutputType>
-    <RootNamespace>Sa.Ki.Test.WebAutomation.DesktopApp</RootNamespace>
-    <AssemblyName>Sa.Ki.Test.WebAutomation.DesktopApp</AssemblyName>
+    <ProjectGuid>{2573FAE3-9A86-4F32-99C5-34FAD9BCF87B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Sa.Ki.Test.WebAutomation.DesktopApp.App</RootNamespace>
+    <AssemblyName>Sa.Ki.Test.WebAutomation.DesktopApp.App</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,6 +26,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -113,14 +116,21 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dialogs\WebElementCreateEditDialog.xaml.cs">
-      <DependentUpon>WebElementCreateEditDialog.xaml</DependentUpon>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\CombinedWebElementInfoViewModel.cs" />
-    <Compile Include="Models\WebContextInfoViewModel.cs" />
-    <Compile Include="Models\WebElementInfoViewModel.cs" />
-    <Compile Include="Models\WebElementsViewModelsFactory.cs" />
-    <Compile Include="Models\WebLocatorInfoViewModel.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TempDataGenerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -134,32 +144,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Controls\WebElementInfoUserControl.xaml.cs">
-      <DependentUpon>WebElementInfoUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\WebElementsTreeUserControl.xaml.cs">
-      <DependentUpon>WebElementsTreeUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\CloneWebElementCommand.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\CopyNameCommand.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\CopyWebElementCommand.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\CreateWebElementCommand.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\CutWebElementCommand.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\DeleteWebElementCommand.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\EditWebElementCommand.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\PasteWebElementCommand.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\WebElementCommand.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\WebElementCommandsHelper.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\WebElementInfoToCommandsConverter.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\WebElementMenuItemsFactory.cs" />
-    <Compile Include="Controls\WebLocatorInfoUserControl.xaml.cs">
-      <DependentUpon>WebLocatorInfoUserControl.xaml</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -167,22 +155,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\WebElementInfoUserControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\WebElementsTreeUserControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\WebLocatorInfoUserControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\WebElementCreateEditDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\desktopApp\Sa.Ki.Test.DesktopApp.Models\Sa.Ki.Test.DesktopApp.Models.csproj">
@@ -193,14 +166,20 @@
       <Project>{446bbd69-56c5-490f-a168-95a2f0050b9c}</Project>
       <Name>Sa.Ki.Test.DesktopApp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Sa.Ki.Test\Sa.Ki.Test.csproj">
-      <Project>{c6f6191a-1ced-4a50-b728-d083bc7ad0a3}</Project>
-      <Name>Sa.Ki.Test</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Sa.Ki.Test.WebAutomation\Sa.Ki.Test.WebAutomation.csproj">
       <Project>{4ae5fc00-bf08-445c-bad2-ee691ccdda4f}</Project>
       <Name>Sa.Ki.Test.WebAutomation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sa.Ki.Test.WebAutomation.DesktopApp\Sa.Ki.Test.WebAutomation.DesktopApp.csproj">
+      <Project>{1707eb56-796e-4080-b035-7ca00d8a70c6}</Project>
+      <Name>Sa.Ki.Test.WebAutomation.DesktopApp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

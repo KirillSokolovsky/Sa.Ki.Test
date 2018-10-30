@@ -17,5 +17,7 @@
             get => _items;
             set => this.RaiseAndSetIfChanged(ref _items, value);
         }
+
+        public ICommand Command => null;
     }
 }
