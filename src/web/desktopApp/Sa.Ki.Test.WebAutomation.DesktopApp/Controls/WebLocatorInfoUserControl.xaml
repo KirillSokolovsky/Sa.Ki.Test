@@ -10,7 +10,8 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
-        
+
+        <dacnv:DebugConverter x:Key="DbgCnv"></dacnv:DebugConverter>
         <dacnv:InvertBoolConverter x:Key="NotCnv"></dacnv:InvertBoolConverter>
 
         <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
@@ -56,9 +57,8 @@
 
         <WrapPanel Grid.Row="0">
             <Label>Locator type:</Label>
-            <ComboBox ItemsSource="{Binding WebLocator.LocatorTypes, Mode=OneWay}"
-                      SelectedItem="{Binding WebLocator.LocatorType, UpdateSourceTrigger=PropertyChanged}"
-                      IsSynchronizedWithCurrentItem="True"
+            <ComboBox ItemsSource="{Binding WebLocator.LocatorTypes}"
+                      SelectedItem="{Binding WebLocator.LocatorType}"
                       IsEnabled="{Binding IsReadOnly, Converter={StaticResource NotCnv}}">
             </ComboBox>
         </WrapPanel>

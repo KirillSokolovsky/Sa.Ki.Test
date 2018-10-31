@@ -1,7 +1,9 @@
-﻿namespace Sa.Ki.Test.WebAutomation.DesktopApp.Controls.WebElementsTreeUserControlCommands
+﻿namespace Sa.Ki.Test.WebAutomation.DesktopApp.Converters
 {
     using ReactiveUI;
     using Sa.Ki.Test.DesktopApp.Models.SaKiMenu;
+    using Sa.Ki.Test.WebAutomation.DesktopApp.Controls;
+    using Sa.Ki.Test.WebAutomation.DesktopApp.Controls.WebElementsTreeUserControlCommands;
     using Sa.Ki.Test.WebAutomation.DesktopApp.Models;
     using System;
     using System.Collections.Generic;
@@ -15,7 +17,8 @@
     using System.Windows;
     using System.Windows.Data;
 
-    public class WebElementInfoToCommandsConverter : DependencyObject, IValueConverter
+    [ValueConversion(typeof(WebElementInfoViewModel), typeof(List<SaKiMenuItemViewModel>))]
+    public class WebElementToCommandsConverter : DependencyObject, IValueConverter
     {
         private WebElementMenuItemsFactory _webElementMenuItemsFactory;
 
@@ -25,7 +28,7 @@
             set { SetValue(TreeControlProperty, value); }
         }
         public static readonly DependencyProperty TreeControlProperty =
-            DependencyProperty.Register("TreeControl", typeof(WebElementsTreeUserControl), typeof(WebElementInfoToCommandsConverter), new PropertyMetadata(null));
+            DependencyProperty.Register("TreeControl", typeof(WebElementsTreeUserControl), typeof(WebElementToCommandsConverter), new PropertyMetadata(null));
 
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -40,7 +43,7 @@
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException("WebElementInfoToCommandsConverter doesn't support back convertation");
+            throw new NotSupportedException("WebElementToCommandsConverter doesn't support back convertation");
         }
     }
 }

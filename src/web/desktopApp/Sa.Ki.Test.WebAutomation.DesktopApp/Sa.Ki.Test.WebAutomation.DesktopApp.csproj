@@ -113,6 +113,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\WebElementLocatorsPathUserControl.xaml.cs">
+      <DependentUpon>WebElementLocatorsPathUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\WebElementToLocatorsPathConverter.cs" />
     <Compile Include="Dialogs\WebElementCreateEditDialog.xaml.cs">
       <DependentUpon>WebElementCreateEditDialog.xaml</DependentUpon>
     </Compile>
@@ -121,6 +125,7 @@
     <Compile Include="Models\WebElementInfoViewModel.cs" />
     <Compile Include="Models\WebElementsViewModelsFactory.cs" />
     <Compile Include="Models\WebLocatorInfoViewModel.cs" />
+    <Compile Include="Models\WebSearchInfoModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -150,7 +155,7 @@
     <Compile Include="Controls\WebElementsTreeUserControlCommands\PasteWebElementCommand.cs" />
     <Compile Include="Controls\WebElementsTreeUserControlCommands\WebElementCommand.cs" />
     <Compile Include="Controls\WebElementsTreeUserControlCommands\WebElementCommandsHelper.cs" />
-    <Compile Include="Controls\WebElementsTreeUserControlCommands\WebElementInfoToCommandsConverter.cs" />
+    <Compile Include="Converters\WebElementToCommandsConverter.cs" />
     <Compile Include="Controls\WebElementsTreeUserControlCommands\WebElementMenuItemsFactory.cs" />
     <Compile Include="Controls\WebLocatorInfoUserControl.xaml.cs">
       <DependentUpon>WebLocatorInfoUserControl.xaml</DependentUpon>
@@ -170,6 +175,10 @@
     <Page Include="Controls\WebElementInfoUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\WebElementLocatorsPathUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\WebElementsTreeUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -46,7 +46,7 @@
         <GroupBox Margin="5" Grid.Column="0" Grid.Row="1"
                   Header="Change:">
 
-            <cn:WebElementInfoUserControl WebElement="{Binding WebElement, UpdateSourceTrigger=PropertyChanged}">
+            <cn:WebElementInfoUserControl WebElement="{Binding WebElement}">
 
             </cn:WebElementInfoUserControl>
 
@@ -76,7 +76,7 @@
                   Header="Original"
                   Grid.Row="1">
 
-            <cn:WebElementInfoUserControl WebElement="{Binding SourceWebElement, UpdateSourceTrigger=PropertyChanged}"
+            <cn:WebElementInfoUserControl WebElement="{Binding SourceWebElement}"
                                           IsReadOnly="True"
                                           Grid.Column="0">
 

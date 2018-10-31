@@ -3,6 +3,7 @@
     using ReactiveUI;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -13,6 +14,13 @@
 
         public WebLocatorInfoViewModel(WebLocatorInfo locatorInfo = null)
         {
+            this.WhenAnyValue(w => w.LocatorType)
+                .Subscribe(t => Value = $"{IsRelative} | {t}: {LocatorValue}");
+            this.WhenAnyValue(w => w.LocatorValue)
+                .Subscribe(v => Value = $"{IsRelative} | {LocatorType}: {v}");
+            this.WhenAnyValue(w => w.IsRelative)
+                .Subscribe(ir => Value = $"{ir} | {LocatorType}: {LocatorValue}");
+
             _sourceLocatorInfo = locatorInfo ?? new WebLocatorInfo();
             LocatorType = _sourceLocatorInfo.LocatorType;
             LocatorValue = _sourceLocatorInfo.LocatorValue;
@@ -38,6 +46,15 @@
         {
             get => _isRelative;
             set => this.RaiseAndSetIfChanged(ref _isRelative, value);
+        }
+
+
+
+        private string _value;
+        public string Value
+        {
+            get => _value;
+            set => this.RaiseAndSetIfChanged(ref _value, value);
         }
 
 

@@ -7,7 +7,7 @@
         xmlns:dacn="clr-namespace:Sa.Ki.Test.DesktopApp.Controls;assembly=Sa.Ki.Test.DesktopApp"
         xmlns:sk="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Controls;assembly=Sa.Ki.Test.WebAutomation.DesktopApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="900" Width="1500">
     <Grid>
 
         <Grid.RowDefinitions>

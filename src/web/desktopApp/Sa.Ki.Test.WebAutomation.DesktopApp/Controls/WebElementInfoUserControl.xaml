@@ -11,6 +11,8 @@
 
     <UserControl.Resources>
 
+        <dacnv:DebugConverter x:Key="DbgCnv"></dacnv:DebugConverter>
+        
         <dacnv:InvertBoolConverter x:Key="NotCnv"></dacnv:InvertBoolConverter>
         <dacnv:StringNullOrEmptyConverter x:Key="IsNullOrEmptyCnv"></dacnv:StringNullOrEmptyConverter>
         <dacnv:NullableCollectionLength x:Key="NullableCollectionLengthCnv"></dacnv:NullableCollectionLength>
@@ -45,6 +47,7 @@
 
     <Grid Name="LayoutGrid">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -158,11 +161,17 @@
 
         </Expander>
 
-        <GroupBox Grid.Row="6" Header="Locator" Margin="5">
+        <GroupBox Grid.Row="6" Header="Locator:" Margin="5" Background="Transparent">
             <local:WebLocatorInfoUserControl WebLocator="{Binding WebElement.Locator}"
                                              IsReadOnly="{Binding IsReadOnly}">
 
             </local:WebLocatorInfoUserControl>
+        </GroupBox>
+
+        <GroupBox Grid.Row="7" Header="Locators path:" Margin="5" Background="Transparent">
+            <local:WebElementLocatorsPathUserControl WebElement="{Binding WebElement}">
+                
+            </local:WebElementLocatorsPathUserControl>
         </GroupBox>
 
     </Grid>

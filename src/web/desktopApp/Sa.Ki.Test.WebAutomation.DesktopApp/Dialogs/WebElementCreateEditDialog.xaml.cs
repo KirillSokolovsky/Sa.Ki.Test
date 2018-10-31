@@ -54,7 +54,8 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
             IsEditMode = true;
             Title = $"Edit WebElement: {webElement.Name}";
             SourceWebElement = webElement;
-            WebElement = WebElementsViewModelsFactory.GetCopyOfBaseInformation(SourceWebElement);
+            WebElement = WebElementsViewModelsFactory.GetCopyOfBaseInformation(webElement);
+            WebElement.Parent = webElement.Parent;
 
             InitializeComponent();
 
@@ -105,6 +106,7 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
                 WebElement = SourceWebElement;
             }
 
+            SourceWebElement = null;
             DialogResult = true;
             Close();
         }
@@ -112,6 +114,7 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
         private void CancelMenuItem_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+            SourceWebElement = null;
             Close();
         }
     }

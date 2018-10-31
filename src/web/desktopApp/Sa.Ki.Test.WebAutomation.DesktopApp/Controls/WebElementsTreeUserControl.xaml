@@ -8,7 +8,7 @@
              xmlns:da="clr-namespace:Sa.Ki.Test.DesktopApp;assembly=Sa.Ki.Test.DesktopApp"
              xmlns:damdlssakimenu="clr-namespace:Sa.Ki.Test.DesktopApp.Models.SaKiMenu;assembly=Sa.Ki.Test.DesktopApp.Models"
              xmlns:mdls="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Models"
-             xmlns:tcmds="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Controls.WebElementsTreeUserControlCommands"
+             xmlns:cnv="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -90,9 +90,9 @@
         <Grid.Resources>
 
             <da:BindingProxy x:Key="BindingProxy" Data="{Binding}"></da:BindingProxy>
-            <tcmds:WebElementInfoToCommandsConverter x:Key="CmdCnv" 
+            <cnv:WebElementToCommandsConverter x:Key="CmdCnv" 
                                                      TreeControl="{Binding Data, Source={StaticResource BindingProxy}}">
-            </tcmds:WebElementInfoToCommandsConverter>
+            </cnv:WebElementToCommandsConverter>
 
             <ContextMenu x:Key="WebElementInfoTreeViewItemContextMenu"
                          ItemsSource="{Binding SelectedWebElement, Converter={StaticResource CmdCnv}}"
