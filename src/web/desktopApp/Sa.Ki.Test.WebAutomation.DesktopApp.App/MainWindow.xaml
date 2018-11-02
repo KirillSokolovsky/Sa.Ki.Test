@@ -12,7 +12,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -26,7 +26,13 @@
             <CheckBox IsChecked="{Binding IsReadOnly}"></CheckBox>
         </WrapPanel>
 
-        <sk:WebElementInfoUserControl Grid.Row="1" Grid.Column="1" 
+        <sk:WebElementsTreeUserControl  Grid.Row="1"
+                                        x:Name="Tree"
+                                        WebContexts="{Binding WebContexts}"
+                                        SelectedWebElement="{Binding WebElement, Mode=TwoWay}">
+        </sk:WebElementsTreeUserControl>
+
+        <!--<sk:WebElementInfoUserControl Grid.Row="1" Grid.Column="1" 
                                       WebElement="{Binding WebElement, UpdateSourceTrigger=PropertyChanged}" 
                                       IsReadOnly="True">
 
@@ -43,13 +49,11 @@
                 </Style>
             </sk:WebElementInfoUserControl.Style>
 
-        </sk:WebElementInfoUserControl>
+        </sk:WebElementInfoUserControl>-->
 
-        <sk:WebElementsTreeUserControl  Grid.Row="1"
-                                        x:Name="Tree"
-                                        WebContexts="{Binding WebContexts}"
-                                        SelectedWebElement="{Binding WebElement, Mode=TwoWay}">
-        </sk:WebElementsTreeUserControl>
+        <sk:SaKiChromeBrowserUserControl Grid.Row="1" Grid.Column="1" >
+            
+        </sk:SaKiChromeBrowserUserControl>
 
     </Grid>
 </Window>
