@@ -1,13 +1,23 @@
-﻿<Window x:Class="Sa.Ki.Test.WebAutomation.DesktopApp.App.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.App"
-        xmlns:dacn="clr-namespace:Sa.Ki.Test.DesktopApp.Controls;assembly=Sa.Ki.Test.DesktopApp"
-        xmlns:sk="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Controls;assembly=Sa.Ki.Test.WebAutomation.DesktopApp"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="1500">
+﻿<controls:MetroWindow x:Class="Sa.Ki.Test.WebAutomation.DesktopApp.App.MainWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:local="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.App"
+                      xmlns:dacn="clr-namespace:Sa.Ki.Test.DesktopApp.Controls;assembly=Sa.Ki.Test.DesktopApp"
+                      xmlns:dacnv="clr-namespace:Sa.Ki.Test.DesktopApp.Converters;assembly=Sa.Ki.Test.DesktopApp"
+                      xmlns:cn="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Controls;assembly=Sa.Ki.Test.WebAutomation.DesktopApp"
+                      xmlns:cncb="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.CefBrowser.Controls;assembly=Sa.Ki.Test.WebAutomation.DesktopApp.CefBrowser"
+                      mc:Ignorable="d"
+                      Title="MainWindow" Height="900" Width="1500">
+
+    <controls:MetroWindow.Resources>
+
+        <dacnv:DebugConverter x:Key="DbgCnv"></dacnv:DebugConverter>
+        
+    </controls:MetroWindow.Resources>
+    
     <Grid>
 
         <Grid.RowDefinitions>
@@ -15,45 +25,81 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="2*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+        <Menu>
+            <MenuItem Header="Test" Click="Test_Click"></MenuItem>
+        </Menu>
+        
+        <TabControl Grid.Row="1">
+            
+            <TabItem Header="WebElements">
+                <Grid>
 
-        <WrapPanel Grid.ColumnSpan="2">
-            <Button Click="Test_Click">Test</Button>
-            <Button Click="Test_Click1">Test1</Button>
-            <CheckBox IsChecked="{Binding IsReadOnly}"></CheckBox>
-        </WrapPanel>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
 
-        <sk:WebElementsTreeUserControl  Grid.Row="1"
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <WrapPanel Grid.ColumnSpan="2">
+                        <Button Click="Test_Click">Test</Button>
+                        <Button Click="Test_Click1">Test1</Button>
+                        <CheckBox IsChecked="{Binding IsReadOnly}"></CheckBox>
+                    </WrapPanel>
+
+                    <cn:WebElementsTreeUserControl  Grid.Row="1"
                                         x:Name="Tree"
                                         WebContexts="{Binding WebContexts}"
                                         SelectedWebElement="{Binding WebElement, Mode=TwoWay}">
-        </sk:WebElementsTreeUserControl>
+                    </cn:WebElementsTreeUserControl>
 
-        <!--<sk:WebElementInfoUserControl Grid.Row="1" Grid.Column="1" 
+                    <cn:WebElementInfoUserControl Grid.Row="1" Grid.Column="1" 
                                       WebElement="{Binding WebElement, UpdateSourceTrigger=PropertyChanged}" 
                                       IsReadOnly="True">
 
-            <sk:WebElementInfoUserControl.Style>
-                <Style TargetType="{x:Type sk:WebElementInfoUserControl}">
+                        <cn:WebElementInfoUserControl.Style>
+                            <Style TargetType="{x:Type cn:WebElementInfoUserControl}">
 
-                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                <Setter Property="Visibility" Value="Visible"></Setter>
 
-                    <Style.Triggers>
-                        <Trigger Property="WebElement" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Collapsed"></Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </sk:WebElementInfoUserControl.Style>
+                                <Style.Triggers>
+                                    <Trigger Property="WebElement" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </cn:WebElementInfoUserControl.Style>
 
-        </sk:WebElementInfoUserControl>-->
+                    </cn:WebElementInfoUserControl>
 
-        <sk:SaKiChromeBrowserUserControl Grid.Row="1" Grid.Column="1" >
+                </Grid>
+            </TabItem>
             
-        </sk:SaKiChromeBrowserUserControl>
+            <TabItem Header="Browser" IsSelected="True">
 
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <cncb:BrowserFramesUserControl Grid.Column="0"
+                                                   RootFrame="{Binding RootFrame, NotifyOnSourceUpdated=True}">
+                        
+                    </cncb:BrowserFramesUserControl>
+                    
+                    <cncb:CefBrowserUserControl Grid.Column="1"
+                                                RootFrame="{Binding RootFrame, Mode=TwoWay}">
+
+                    </cncb:CefBrowserUserControl>
+                </Grid>
+                
+                
+            </TabItem>
+            
+        </TabControl>
     </Grid>
-</Window>
+</controls:MetroWindow>

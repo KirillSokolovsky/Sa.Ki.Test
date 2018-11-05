@@ -1,4 +1,4 @@
-﻿namespace Sa.Ki.Test.WebAutomation.DesktopApp.JSB
+﻿namespace Sa.Ki.Test.WebAutomation.DesktopApp.CefBrowser.Models
 {
     using ReactiveUI;
     using System;
@@ -19,11 +19,25 @@
             set => this.RaiseAndSetIfChanged(ref _name, value);
         }
 
+        private string _loadedUrl;
+        public string LoadedUrl
+        {
+            get => _loadedUrl;
+            set => this.RaiseAndSetIfChanged(ref _loadedUrl, value);
+        }
+
         private long _identifier;
         public long Identifier
         {
             get => _identifier;
             set => this.RaiseAndSetIfChanged(ref _identifier, value);
+        }
+
+        private bool _isLoaded;
+        public bool IsLoaded
+        {
+            get => _isLoaded;
+            set => this.RaiseAndSetIfChanged(ref _isLoaded, value);
         }
 
         private ObservableCollection<BrowserFrame> _frames;

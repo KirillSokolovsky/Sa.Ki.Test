@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Controls"
              xmlns:cnv="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Converters"
              xmlns:dacnv="clr-namespace:Sa.Ki.Test.DesktopApp.Converters;assembly=Sa.Ki.Test.DesktopApp"
-             xmlns:mdls="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Models"
+             xmlns:mdls="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Models;assembly=Sa.Ki.Test.WebAutomation.DesktopApp.Models"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 

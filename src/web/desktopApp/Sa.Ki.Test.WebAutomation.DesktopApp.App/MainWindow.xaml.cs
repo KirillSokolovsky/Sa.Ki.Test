@@ -1,6 +1,8 @@
 ﻿namespace Sa.Ki.Test.WebAutomation.DesktopApp.App
 {
+    using MahApps.Metro.Controls;
     using ReactiveUI;
+    using Sa.Ki.Test.WebAutomation.DesktopApp.CefBrowser.Models;
     using Sa.Ki.Test.WebAutomation.DesktopApp.Models;
     using System;
     using System.Collections.Generic;
@@ -19,10 +21,7 @@
     using System.Windows.Navigation;
     using System.Windows.Shapes;
 
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         public class TempModel : ReactiveObject
         {
@@ -51,6 +50,13 @@
                 get => _isReadOnly;
                 set => this.RaiseAndSetIfChanged(ref _isReadOnly, value);
             }
+
+            private BrowserFrame _rootFrame;
+            public BrowserFrame RootFrame
+            {
+                get => _rootFrame;
+                set => this.RaiseAndSetIfChanged(ref _rootFrame, value);
+            }
         }
 
         public MainWindow()
@@ -65,14 +71,13 @@
             }
 
             this.DataContext = model;
-            
+
             InitializeComponent();
         }
 
         private void Test_Click(object sender, RoutedEventArgs e)
         {
             var dc = DataContext as TempModel;
-            Tree.SelectedWebElement = dc.WebContexts[3];
         }
 
         private void Test_Click1(object sender, RoutedEventArgs e)
