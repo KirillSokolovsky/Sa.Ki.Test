@@ -51,32 +51,46 @@
             CBrowser.FrameLoadEnd += CBrowser_FrameLoadEnd;
 
             CBrowser.JavascriptObjectRepository.ResolveObject += JavascriptObjectRepository_ResolveObject;
-
-            //CBrowser.JavascriptObjectRepository.Register("boundAsync", _abo, true);
         }
 
         private void JavascriptObjectRepository_ResolveObject(object sender, CefSharp.Event.JavascriptBindingEventArgs e)
         {
-            Trace.WriteLine($"=== Resolve request for: {e.ObjectName}");
+            //Trace.WriteLine($"=== Resolve request for: {e.ObjectName}");
+
+            var objName = e.ObjectName;
+
+            var ps = objName.Split('_');
+            if (ps.Length < 2) return;
+
+            var identifier = long.Parse(ps[1]);
+
+            if (CBrowser.JavascriptObjectRepository.IsBound(objName))
+            {
+                CBrowser.JavascriptObjectRepository.UnRegister(objName);
+                _syncFrameObjsDict.Remove(identifier);
+                //Trace.WriteLine($"=== Unregister: {objName}");
+            }
+
+            //Trace.WriteLine($"=== Register: {objName}");
+            var syncObj = new BrowserFrameSyncBoundObject(identifier);
+            CBrowser.JavascriptObjectRepository.Register(syncObj.BindName, syncObj, true);
+            _syncFrameObjsDict.Add(syncObj.FrameIdentifier, syncObj);
         }
 
         private void CBrowser_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
             var frame = e.Frame;
             var fr = _framesDict[frame.Identifier];
-            var syncFr = _syncFrameObjsDict[frame.Identifier];
+            var objName = BrowserFrameSyncBoundObject.CreateName(frame.Identifier);
 
-            if (fr.IsLoaded)
-            {
-                Trace.WriteLine($"=== Reloaded: {syncFr.BindName}");
-                return;
-            }
+            //if (fr.IsLoaded)
+                //Trace.WriteLine($"=== Reloaded: {objName}");
             fr.IsLoaded = true;
 
-            Trace.WriteLine($"=== Inject: {syncFr.BindName}");
+            //Trace.WriteLine($"=== Inject: {objName}");
 
-            var jsLines = File.ReadAllLines(@"C:\Dev\JSTest\frameSync.js");
-            jsLines[0] = $"var frameSyncObjectName = \"{syncFr.BindName}\";";
+            var jsLines = File.ReadAllLines(@"C:\Dev\SaKi\Sa.Ki.Test\src\web\desktopApp\Sa.Ki.Test.WebAutomation.DesktopApp.CefBrowser\JS\frameSync.js");
+            jsLines[0] = $"var frameSyncObjectName = \"{objName}\";";
             var js = string.Join(Environment.NewLine, jsLines);
             frame.ExecuteJavaScriptAsync(js);
         }
@@ -89,28 +103,12 @@
             {
                 var frame = e.Frame;
 
-                if(frame.IsMain)
+                if (frame.IsMain)
                 {
                     CBrowser.JavascriptObjectRepository.UnRegisterAll();
                     _syncFrameObjsDict.Clear();
                     Trace.WriteLine("=== Clear sync objs");
-                }
 
-                var syncObj = new BrowserFrameSyncBoundObject(frame.Identifier);
-                Trace.WriteLine($"=== Register: {syncObj.BindName}");
-
-                if (CBrowser.JavascriptObjectRepository.IsBound(syncObj.BindName))
-                {
-                    CBrowser.JavascriptObjectRepository.UnRegister(syncObj.BindName);
-                    _syncFrameObjsDict.Remove(syncObj.FrameIdentifier);
-                    Trace.WriteLine($"=== RERegister: {syncObj.BindName}");
-                }
-
-                CBrowser.JavascriptObjectRepository.Register(syncObj.BindName, syncObj, true);
-                _syncFrameObjsDict.Add(syncObj.FrameIdentifier, syncObj);
-
-                if (frame.IsMain)
-                {
                     var guid = Guid.NewGuid();
                     //Trace.WriteLine($"ROOT UPDATED: {guid}");
                     RootFrame = new BrowserFrame

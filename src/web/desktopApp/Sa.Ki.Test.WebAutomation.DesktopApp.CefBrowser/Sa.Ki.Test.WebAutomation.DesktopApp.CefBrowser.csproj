@@ -59,6 +59,9 @@
     <Reference Include="DynamicData, Version=6.4.0.2419, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\packages\DynamicData.6.4.0.2419\lib\net46\DynamicData.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="ReactiveUI, Version=9.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\packages\ReactiveUI.9.1.1\lib\net461\ReactiveUI.dll</HintPath>
     </Reference>
@@ -135,6 +138,8 @@
       <DependentUpon>CefBrowserUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="JSB\BrowserFrameSyncBoundObject.cs" />
+    <Compile Include="JSB\HtmlAttribute.cs" />
+    <Compile Include="JSB\HtmlElement.cs" />
     <Compile Include="Models\BrowserFrame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
