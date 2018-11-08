@@ -1,6 +1,8 @@
 ﻿namespace Sa.Ki.Test.WebAutomation.DesktopApp.CefBrowser.Models
 {
+    using CefSharp;
     using ReactiveUI;
+    using Sa.Ki.Test.WebAutomation.DesktopApp.CefBrowser.JSB;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -10,7 +12,8 @@
 
     public class BrowserFrame : ReactiveObject
     {
-        public string Key { get; set; }
+        public BrowserFrameSyncBoundObject SyncObject { get; set; }
+        public BrowserFrame Parent { get; set; }
 
         private string _name;
         public string Name
@@ -45,6 +48,21 @@
         {
             get => _frames;
             set => this.RaiseAndSetIfChanged(ref _frames, value);
+        }
+
+        public IEnumerable<BrowserFrame> IterateSelfAndChildren()
+        {
+            yield return this;
+            if(Frames != null)
+            {
+                foreach (var frame in Frames)
+                {
+                    foreach (var f in frame.IterateSelfAndChildren())
+                    {
+                        yield return f;
+                    }
+                }
+            }
         }
     }
 }

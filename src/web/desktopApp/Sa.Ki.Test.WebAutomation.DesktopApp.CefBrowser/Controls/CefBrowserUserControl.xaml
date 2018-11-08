@@ -19,6 +19,8 @@
 
             <WrapPanel>
                 <Button Click="DeveloperToolsButton_Click">Developer Tools</Button>
+                <TextBox Name="MagicTextBox" MinWidth="200"></TextBox>
+                <Button Click="SearchButton_Click">Search</Button>
             </WrapPanel>
             
             <TextBox Text="{Binding CurrentUrl, UpdateSourceTrigger=PropertyChanged}">

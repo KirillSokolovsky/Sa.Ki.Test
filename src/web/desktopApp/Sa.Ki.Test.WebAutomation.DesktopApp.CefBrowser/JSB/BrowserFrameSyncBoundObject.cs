@@ -1,5 +1,6 @@
 ﻿namespace Sa.Ki.Test.WebAutomation.DesktopApp.CefBrowser.JSB
 {
+    using CefSharp;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
@@ -35,6 +36,15 @@
             Trace.WriteLine($"=== Handled: {eventType}");
 
             var element = JsonConvert.DeserializeObject<HtmlElement>(targetElementJson);
+        }
+
+        public void Highlight(string xpath, IFrame frame)
+        {
+            frame.ExecuteJavaScriptAsync($"highlightByXPath(\"{xpath}\")");
+        }
+        public void ClearHighlight(IFrame frame)
+        {
+            frame.ExecuteJavaScriptAsync($"clearHighlight()");
         }
     }
 }

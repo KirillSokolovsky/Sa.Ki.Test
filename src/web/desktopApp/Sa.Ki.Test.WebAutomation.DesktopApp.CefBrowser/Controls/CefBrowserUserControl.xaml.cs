@@ -45,7 +45,7 @@
             InitializeComponent();
             LayoutGrid.DataContext = this;
 
-            CurrentUrl = "https://yandex.ru";
+            CurrentUrl = "file:///C:/Dev/JSTest/test.html";
 
             CBrowser.FrameLoadStart += CBrowser_FrameLoadStart;
             CBrowser.FrameLoadEnd += CBrowser_FrameLoadEnd;
@@ -67,36 +67,33 @@
             if (CBrowser.JavascriptObjectRepository.IsBound(objName))
             {
                 CBrowser.JavascriptObjectRepository.UnRegister(objName);
-                _syncFrameObjsDict.Remove(identifier);
                 //Trace.WriteLine($"=== Unregister: {objName}");
             }
 
             //Trace.WriteLine($"=== Register: {objName}");
-            var syncObj = new BrowserFrameSyncBoundObject(identifier);
+            var fr = _framesDict[identifier];
+            var syncObj = fr.SyncObject;
             CBrowser.JavascriptObjectRepository.Register(syncObj.BindName, syncObj, true);
-            _syncFrameObjsDict.Add(syncObj.FrameIdentifier, syncObj);
         }
 
         private void CBrowser_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
             var frame = e.Frame;
             var fr = _framesDict[frame.Identifier];
-            var objName = BrowserFrameSyncBoundObject.CreateName(frame.Identifier);
 
             //if (fr.IsLoaded)
-                //Trace.WriteLine($"=== Reloaded: {objName}");
+            //Trace.WriteLine($"=== Reloaded: {objName}");
             fr.IsLoaded = true;
 
             //Trace.WriteLine($"=== Inject: {objName}");
 
             var jsLines = File.ReadAllLines(@"C:\Dev\SaKi\Sa.Ki.Test\src\web\desktopApp\Sa.Ki.Test.WebAutomation.DesktopApp.CefBrowser\JS\frameSync.js");
-            jsLines[0] = $"var frameSyncObjectName = \"{objName}\";";
+            jsLines[0] = $"var frameSyncObjectName = \"{fr.SyncObject.BindName}\";";
             var js = string.Join(Environment.NewLine, jsLines);
             frame.ExecuteJavaScriptAsync(js);
         }
 
         private Dictionary<long, BrowserFrame> _framesDict = new Dictionary<long, BrowserFrame>();
-        private Dictionary<long, BrowserFrameSyncBoundObject> _syncFrameObjsDict = new Dictionary<long, BrowserFrameSyncBoundObject>();
         private void CBrowser_FrameLoadStart(object sender, FrameLoadStartEventArgs e)
         {
             Dispatcher.Invoke(() =>
@@ -106,8 +103,6 @@
                 if (frame.IsMain)
                 {
                     CBrowser.JavascriptObjectRepository.UnRegisterAll();
-                    _syncFrameObjsDict.Clear();
-                    Trace.WriteLine("=== Clear sync objs");
 
                     var guid = Guid.NewGuid();
                     //Trace.WriteLine($"ROOT UPDATED: {guid}");
@@ -116,7 +111,8 @@
                         Frames = new ObservableCollection<BrowserFrame>(),
                         Identifier = frame.Identifier,
                         Name = $"{GetFrameName(frame)}",
-                        LoadedUrl = frame.Url
+                        LoadedUrl = frame.Url,
+                        SyncObject = new BrowserFrameSyncBoundObject(frame.Identifier)
                     };
                     _framesDict.Clear();
                     _framesDict.Add(frame.Identifier, RootFrame);
@@ -137,7 +133,8 @@
                             {
                                 Identifier = f.Identifier,
                                 Name = GetFrameName(f),
-                                LoadedUrl = frame.Url
+                                LoadedUrl = frame.Url,
+                                SyncObject = new BrowserFrameSyncBoundObject(frame.Identifier)
                             };
                             _framesDict.Add(f.Identifier, fr);
 
@@ -146,6 +143,7 @@
                             if (pfr.Frames == null)
                                 pfr.Frames = new ObservableCollection<BrowserFrame>();
                             pfr.Frames.Add(fr);
+                            fr.Parent = pfr;
 
                             //Trace.WriteLine($"ID: {fr.Identifier}");
                         }
@@ -166,6 +164,18 @@
         private void DeveloperToolsButton_Click(object sender, RoutedEventArgs e)
         {
             CBrowser.ShowDevTools();
+        }
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            var br = CBrowser.GetBrowser();
+            foreach (var f in RootFrame.IterateSelfAndChildren())
+            {
+                var fr = br.GetFrame(f.Identifier);
+                f.SyncObject.ClearHighlight(fr);
+                if (!string.IsNullOrEmpty(MagicTextBox.Text))
+                    f.SyncObject.Highlight(MagicTextBox.Text, fr);
+            }
         }
     }
 }

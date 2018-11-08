@@ -51,6 +51,7 @@ var eventNames = [
 ];
 
 var log = console.log;
+let hClassName = "saki-highlight";
 
 var frameSyncObject;
 
@@ -105,10 +106,40 @@ async function start() {
 
     var style = document.createElement("style");
     style.type = "text/css";
-    style.innerHTML = ".my-enter{ background-color: lightgoldenrodyellow; outline:1px solid blue; }";
+    style.innerHTML = "." + hClassName + "{ background-color: lightgoldenrodyellow; outline:1px solid blue; }";
     document.getElementsByTagName("head")[0].appendChild(style);
 
     for(i = 0; i < eventNames.length; i++){
         document.addEventListener(eventNames[i], handleEvent);
     }
 };
+
+function getElementsByXpath(path) {
+    return document.evaluate(path, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+}
+function getElementByXpath(path) {
+    return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+}
+
+var hss = new Array();
+
+function clearHighlight(){
+    hss.forEach((v, i, a) => v.classList.remove(hClassName));
+    hss.length = 0;
+}
+
+function highlightByXPath(xpath){
+
+    clearHighlight();
+
+    var els = getElementsByXpath(xpath);
+    var ln = els.snapshotLength;
+
+    if(ln == 0) return;  
+
+    for(var i = 0; i < ln; i++){
+        let el = els.snapshotItem(i);
+        hss.push(el);
+        el.classList.add(hClassName);
+    }
+}

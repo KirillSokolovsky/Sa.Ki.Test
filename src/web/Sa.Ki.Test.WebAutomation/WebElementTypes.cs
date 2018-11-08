@@ -23,5 +23,9 @@
 
         public const string DropDown = nameof(DropDown);
         public const string RadioGroup = nameof(RadioGroup);
+
+        //Extra
+        public const string Frame = nameof(Frame);
+        public const string Reference = nameof(Reference);
     }
 }

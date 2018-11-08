@@ -20,6 +20,9 @@
 
         private IWebDriver _driver { get; set; }
         private IWebDriverFactory _webDriverFactory;
+        
+        //Frames
+        //private Stack<>
 
         private string _driverType;
         private string _driverInfo;
