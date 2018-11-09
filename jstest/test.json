@@ -1,0 +1,40 @@
+{
+    "TagName": "input",
+    "Attributes": [
+        {
+            "Name": "class",
+            "Value": "my-input"
+        },
+        {
+            "Name": "id",
+            "Value": "b3"
+        },
+        {
+            "Name": "type",
+            "Value": "button"
+        },
+        {
+            "Name": "value",
+            "Value": "Do3"
+        }
+    ],
+    "Parent": {
+        "TagName": "div",
+        "Attributes": [
+            {
+                "Name": "id",
+                "Value": "id1"
+            },
+            {
+                "Name": "style",
+                "Value": "margin: 50 50 0 0; padding: 5px; border: 1px solid red;"
+            }
+        ],
+        "Parent": {
+            "TagName": "body",
+            "Parent": {
+                "TagName": "html"
+            }
+        }
+    }
+}

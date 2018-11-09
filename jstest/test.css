@@ -1,0 +1,11 @@
+.my-input{
+    padding: 5px;
+    margin: 5px;
+    border: 2px solid green;
+}
+
+.my-frame{
+    padding: 5px;
+    margin: 5px;
+    border: 2px solid blue;
+}
