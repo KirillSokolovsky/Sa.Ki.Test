@@ -9,5 +9,6 @@ namespace Sa.Ki.Test.SakiTree
         string Name { get; }
         string Title { get; }
         string Description { get; }
+        Type NodeType { get; }
     }
 }

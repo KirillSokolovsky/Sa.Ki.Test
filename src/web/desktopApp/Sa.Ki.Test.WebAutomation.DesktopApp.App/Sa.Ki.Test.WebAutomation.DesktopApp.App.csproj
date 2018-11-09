@@ -189,6 +189,10 @@
       <Project>{446bbd69-56c5-490f-a168-95a2f0050b9c}</Project>
       <Name>Sa.Ki.Test.DesktopApp</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Sa.Ki.Test.WebAutomation.ElementsRepository\Sa.Ki.Test.WebAutomation.ElementsRepository.csproj">
+      <Project>{9e41cfd7-39e8-4368-91a7-4df6ada11092}</Project>
+      <Name>Sa.Ki.Test.WebAutomation.ElementsRepository</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Sa.Ki.Test.WebAutomation\Sa.Ki.Test.WebAutomation.csproj">
       <Project>{4ae5fc00-bf08-445c-bad2-ee691ccdda4f}</Project>
       <Name>Sa.Ki.Test.WebAutomation</Name>

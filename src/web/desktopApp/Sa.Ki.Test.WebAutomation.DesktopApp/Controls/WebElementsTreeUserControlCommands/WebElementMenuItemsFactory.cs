@@ -103,6 +103,7 @@
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Control));
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.DropDown));
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.RadioGroup));
+                        group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Reference));
                         break;
                     default:
                         MessageBox.Show($"Unknown element type: {elementType} to create Create New menu items group");
@@ -140,6 +141,9 @@
                         break;
                     case WebElementTypes.RadioGroup:
                         description = $"RadioGroup WebElement is used to describe set of radio inputs, where just one valued could be selected";
+                        break;
+                    case WebElementTypes.Reference:
+                        description = $"Reference WebElement is used to referenc to any existed web element";
                         break;
                     default:
                         MessageBox.Show($"Unknown element type: {elementType} to provide description");

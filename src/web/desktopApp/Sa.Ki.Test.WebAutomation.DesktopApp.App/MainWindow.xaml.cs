@@ -4,6 +4,7 @@
     using ReactiveUI;
     using Sa.Ki.Test.WebAutomation.DesktopApp.CefBrowser.Models;
     using Sa.Ki.Test.WebAutomation.DesktopApp.Models;
+    using Sa.Ki.Test.WebAutomation.ElementsRepository;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -59,31 +60,37 @@
             }
         }
 
+        private WebElementsRepository _webElementsRepository;
+
         public MainWindow()
         {
+            _webElementsRepository = new WebElementsRepository("elements.json");
+            _webElementsRepository.Load();
+
             var model = new TempModel();
             model.WebContexts = new ObservableCollection<WebContextInfoViewModel>();
 
-            for (int i = 1; i < 5; i++)
-            {
-                var wc = TempDataGenerator.GenerateContext(i, 5);
-                model.WebContexts.Add(new WebContextInfoViewModel(wc));
-            }
+            _webElementsRepository.WebContexts.ForEach(wc =>
+                model.WebContexts.Add(new WebContextInfoViewModel(wc)));
+
+            //for (int i = 1; i < 5; i++)
+            //{
+            //    var wc = TempDataGenerator.GenerateContext(i, 5);
+            //    model.WebContexts.Add(new WebContextInfoViewModel(wc));
+            //}
 
             this.DataContext = model;
 
             InitializeComponent();
         }
 
-        private void Test_Click(object sender, RoutedEventArgs e)
+        private void SaveWebElementsButton_Click(object sender, RoutedEventArgs e)
         {
-            var dc = DataContext as TempModel;
-        }
+            _webElementsRepository.WebContexts = (DataContext as TempModel)
+                .WebContexts.Select(wc => WebElementsViewModelsFactory.CreateInfoFromModel(wc))
+                .Cast<WebContextInfo>().ToList();
 
-        private void Test_Click1(object sender, RoutedEventArgs e)
-        {
-            var dc = DataContext as TempModel;
-            dc.WebElement = dc.WebContexts[0];
+            _webElementsRepository.Save();
         }
     }
 }

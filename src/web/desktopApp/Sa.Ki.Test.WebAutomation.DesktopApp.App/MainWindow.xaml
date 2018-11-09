@@ -26,7 +26,6 @@
         </Grid.RowDefinitions>
 
         <Menu>
-            <MenuItem Header="Test" Click="Test_Click"></MenuItem>
         </Menu>
         
         <TabControl Grid.Row="1">
@@ -45,9 +44,7 @@
                     </Grid.ColumnDefinitions>
 
                     <WrapPanel Grid.ColumnSpan="2">
-                        <Button Click="Test_Click">Test</Button>
-                        <Button Click="Test_Click1">Test1</Button>
-                        <CheckBox IsChecked="{Binding IsReadOnly}"></CheckBox>
+                        <Button Click="SaveWebElementsButton_Click">Save</Button>
                     </WrapPanel>
 
                     <cn:WebElementsTreeUserControl  Grid.Row="1"

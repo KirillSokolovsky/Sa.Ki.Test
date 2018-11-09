@@ -24,6 +24,12 @@
         {
             var validator = WebElementCommandsHelper.GetCreateUpdateWebElementValidator(_webElementsTreeUserControl, null);
 
+            if (_elementType == WebElementTypes.Reference)
+            {
+                CreateWebElemetnRefence(validator);
+                return;
+            }
+
             var dialog = new WebElementCreateEditDialog(validator, _elementType,
                 _elementType);
             if (dialog.ShowDialog() != true) return;
@@ -87,6 +93,13 @@
                 comb.Elements.Add(element);
                 element.Parent = comb;
             }
+        }
+
+        private void CreateWebElemetnRefence(Func<WebElementInfoViewModel, string> validator)
+        {
+            var dialog = new WebElementCreateEditDialog(validator, _elementType,
+                _elementType);
+            if (dialog.ShowDialog() != true) return;
         }
     }
 }

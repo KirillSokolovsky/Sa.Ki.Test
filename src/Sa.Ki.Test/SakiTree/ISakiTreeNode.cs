@@ -9,7 +9,8 @@ namespace Sa.Ki.Test.SakiTree
         string Name { get; }
         string Title { get; }
         string Description { get; }
-        string NodeType { get; }
+        string NodeTypeName { get; }
+        Type NodeType { get; }
 
         IList<ISakiTreeNode> Children { get; }
         ISakiTreeNode Parent { get; }

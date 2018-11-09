@@ -10,7 +10,8 @@
         public string Name { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string NodeType { get; set; }
+        public string NodeTypeName { get; set; }
+        public Type NodeType { get; set; }
 
         public IList<ISakiTreeNode> Children { get; set; }
         public ISakiTreeNode Parent { get; set; }
