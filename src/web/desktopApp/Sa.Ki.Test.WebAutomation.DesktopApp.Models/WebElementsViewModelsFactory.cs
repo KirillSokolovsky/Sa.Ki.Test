@@ -137,5 +137,95 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Models
             model.Locator.LocatorType = info.Locator.LocatorType;
             model.Locator.LocatorValue = info.Locator.LocatorValue;
         }
+
+        public static void Filter(this ObservableCollection<CombinedWebElementInfoViewModel> contexts, Func<WebElementInfoViewModel, bool> filter, ref int resultsCount)
+        {
+            if(contexts != null)
+            {
+                foreach (var c in contexts)
+                {
+                    Filter(c, filter, ref resultsCount);
+                }
+            }
+        }
+        private static bool Filter(WebElementInfoViewModel wbElementInfo, Func<WebElementInfoViewModel, bool> filter, ref int resultsCount)
+        {
+            var current = resultsCount;
+            var result = false;
+            if (wbElementInfo is CombinedWebElementInfoViewModel cel)
+            {
+                if (cel.Elements != null)
+                {
+                    foreach (var el in cel.Elements)
+                    {
+                        result = Filter(el, filter, ref resultsCount) || result;
+                    }
+                }
+            }
+
+            if (filter(wbElementInfo))
+            {
+                resultsCount++;
+                wbElementInfo.IsVisible = true;
+                result = true;
+            }
+            else
+            {
+                result = false || result;
+                wbElementInfo.IsVisible = result;
+            }
+
+            return result;
+        }
+
+        private const string _webElementsHierarchyDelimeter = " > ";
+        public static string ToBreadString(this WebElementInfoViewModel webElementInfo)
+        {
+            var el = webElementInfo;
+            var sb = new StringBuilder(el.Name);
+            el = el.Parent;
+
+            while (el != null)
+            {
+                sb.Insert(0, $"{el.Name}{_webElementsHierarchyDelimeter}");
+                el = el.Parent;
+            }
+
+            return sb.ToString();
+        }
+
+        public static WebElementInfoViewModel FindByBreadString(this ObservableCollection<CombinedWebElementInfoViewModel> combinedEls, string breadString)
+        {
+            var parts = breadString.Split(new[] { _webElementsHierarchyDelimeter }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 0) return null;
+
+            var cEl = combinedEls?.FirstOrDefault(ce => ce.Name == parts[0]);
+            WebElementInfoViewModel result = cEl;
+
+            if (result != null && parts.Length > 0)
+            { 
+                result = FindByBreadString(cEl, parts.Skip(1));
+            }
+
+            return result;
+        }
+        private static WebElementInfoViewModel FindByBreadString(CombinedWebElementInfoViewModel combinedWebElement, IEnumerable<string> breadStrings)
+        {
+            if (combinedWebElement.Elements == null)
+                return null;
+
+            var name = breadStrings.First();
+
+            var el = combinedWebElement.Elements.FirstOrDefault(e => e.Name == name);
+            if (el == null) return null;
+            if (breadStrings.Count() == 1) return el;
+
+            if(el is CombinedWebElementInfoViewModel cwe)
+            {
+                return FindByBreadString(cwe, breadStrings.Skip(1));
+            }
+
+            return null;
+        }
     }
 }

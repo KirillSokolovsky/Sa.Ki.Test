@@ -78,7 +78,7 @@
                     MessageBox.Show("Magic error. Context WebElement was created not from tree root");
 
                 if (_webElementsTreeUserControl.WebContexts == null)
-                    _webElementsTreeUserControl.WebContexts = new ObservableCollection<WebContextInfoViewModel>();
+                    _webElementsTreeUserControl.WebContexts = new ObservableCollection<CombinedWebElementInfoViewModel>();
                 _webElementsTreeUserControl.WebContexts.Add(element as WebContextInfoViewModel);
             }
             else

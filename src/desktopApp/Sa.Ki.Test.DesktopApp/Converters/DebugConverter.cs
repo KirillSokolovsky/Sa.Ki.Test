@@ -18,7 +18,7 @@
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Trace.WriteLine($"DEBUG >>>> {value}");
+            Trace.WriteLine($"{parameter}DEBUG >>>> {value}");
             return value;
         }
 

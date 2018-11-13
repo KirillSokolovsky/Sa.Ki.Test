@@ -123,7 +123,25 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <TreeView Name="WebElementsTreeView" SelectedItemChanged="WebElementsTreeView_SelectedItemChanged"
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="0">
+            <TextBox Name="SearchTextBox" 
+                     MinWidth="150" Margin="5" 
+                     TextChanged="SearchTextBox_TextChanged" 
+                     VerticalAlignment="Center">
+            </TextBox>
+            <Button Name="ResetButton" Margin="5" Click="ResetButton_Click" 
+                    VerticalAlignment="Center"
+                    Content="Reset">
+            </Button>
+            <TextBlock Name="ResultsTextBlock" Margin="5" 
+                       VerticalAlignment="Center">
+            </TextBlock>
+        </StackPanel>
+
+        <TreeView Name="WebElementsTreeView" 
+                  Grid.Row="1"
+                  SelectedItemChanged="WebElementsTreeView_SelectedItemChanged"
                   ContextMenu="{StaticResource WebElementInfoTreeViewItemContextMenu}">
 
             <TreeViewItem Header="Web Contexts"
@@ -153,6 +171,13 @@
                 <TreeViewItem.ItemContainerStyle>
                     <Style TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                         <Setter Property="ToolTip" Value="{Binding Description}"></Setter>
+                        <Setter Property="Visibility" Value="Visible"></Setter>
+                        <Setter Property="IsExpanded" Value="True"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsVisible, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
                     </Style>
                 </TreeViewItem.ItemContainerStyle>
                 

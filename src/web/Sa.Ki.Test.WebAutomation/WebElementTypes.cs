@@ -27,5 +27,6 @@
         //Extra
         public const string Frame = nameof(Frame);
         public const string Reference = nameof(Reference);
+        public const string Directory = nameof(Directory);
     }
 }

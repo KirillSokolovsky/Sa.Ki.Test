@@ -86,6 +86,13 @@
             set => this.RaiseAndSetIfChanged(ref _locator, value);
         }
 
+        private bool _isVisible = true;
+        public bool IsVisible
+        {
+            get => _isVisible;
+            set => this.RaiseAndSetIfChanged(ref _isVisible, value);
+        }
+
         public override string ToString()
         {
             return $"{ElementType} | {Name}";

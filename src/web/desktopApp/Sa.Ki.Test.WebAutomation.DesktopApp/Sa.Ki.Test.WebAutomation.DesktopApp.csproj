@@ -138,9 +138,13 @@
     <Compile Include="Controls\WebElementLocatorsPathUserControl.xaml.cs">
       <DependentUpon>WebElementLocatorsPathUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\WebElementToBreadStringConverter.cs" />
     <Compile Include="Converters\WebElementToLocatorsPathConverter.cs" />
     <Compile Include="Dialogs\WebElementCreateEditDialog.xaml.cs">
       <DependentUpon>WebElementCreateEditDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\WebElementPickerDialog.xaml.cs">
+      <DependentUpon>WebElementPickerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -205,6 +209,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\WebElementCreateEditDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\WebElementPickerDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

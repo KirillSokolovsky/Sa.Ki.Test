@@ -3,6 +3,7 @@
     using MahApps.Metro.Controls;
     using ReactiveUI;
     using Sa.Ki.Test.WebAutomation.DesktopApp.CefBrowser.Models;
+    using Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs;
     using Sa.Ki.Test.WebAutomation.DesktopApp.Models;
     using Sa.Ki.Test.WebAutomation.ElementsRepository;
     using System;
@@ -43,7 +44,7 @@
                 set => this.RaiseAndSetIfChanged(ref _webElement, value);
             }
 
-            public ObservableCollection<WebContextInfoViewModel> WebContexts { get; set; }
+            public ObservableCollection<CombinedWebElementInfoViewModel> WebContexts { get; set; }
 
             private bool _isReadOnly;
             public bool IsReadOnly
@@ -68,7 +69,7 @@
             _webElementsRepository.Load();
 
             var model = new TempModel();
-            model.WebContexts = new ObservableCollection<WebContextInfoViewModel>();
+            model.WebContexts = new ObservableCollection<CombinedWebElementInfoViewModel>();
 
             _webElementsRepository.WebContexts.ForEach(wc =>
                 model.WebContexts.Add(new WebContextInfoViewModel(wc)));
@@ -91,6 +92,15 @@
                 .Cast<WebContextInfo>().ToList();
 
             _webElementsRepository.Save();
+        }
+
+        private void SelectMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var dc = DataContext as TempModel;
+
+            var d = new WebElementPickerDialog(dc.WebContexts.ToList(),
+                dc.WebContexts.First().Elements[1]);
+            d.ShowDialog();
         }
     }
 }

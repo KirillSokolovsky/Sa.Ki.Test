@@ -1,0 +1,77 @@
+﻿<controls:MetroWindow x:Class="Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs.WebElementPickerDialog"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:local="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs"
+                      xmlns:cn="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Controls"
+                      xmlns:cnv="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Converters"
+                      xmlns:dacnv="clr-namespace:Sa.Ki.Test.DesktopApp.Converters;assembly=Sa.Ki.Test.DesktopApp"
+                      mc:Ignorable="d"
+                      Title="WebElementPickerDialog" Height="450" Width="800">
+
+    <controls:MetroWindow.Resources>
+        <cnv:WebElementToBreadStringConverter x:Key="BreadCnv"></cnv:WebElementToBreadStringConverter>
+
+        <dacnv:DebugConverter x:Key="DbgCnv"></dacnv:DebugConverter>
+    </controls:MetroWindow.Resources>
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0">
+            <MenuItem Header="Cancel" Click="CancelMenuItem_Click"></MenuItem>
+            <MenuItem Click="SelecMenuItem_Click">
+                <MenuItem.Style>
+                    <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                        <Setter Property="Header" Value="Select"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                                <Setter Property="Header" Value="Update"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </MenuItem.Style>
+            </MenuItem>
+        </Menu>
+
+        <StackPanel Grid.Row="1">
+            <WrapPanel Margin="5">
+                <TextBlock Text=" Original: " VerticalAlignment="Center"></TextBlock>
+                <TextBlock Text="{Binding OriginalWebElement, Converter={StaticResource BreadCnv}}"
+                            VerticalAlignment="Center">
+                </TextBlock>
+
+                <WrapPanel.Style>
+                    <Style TargetType="WrapPanel">
+                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </WrapPanel.Style>
+
+            </WrapPanel>
+            <WrapPanel Margin="5">
+                <TextBlock Text="Selected: " VerticalAlignment="Center"></TextBlock>
+                <TextBlock Text="{Binding SelectedWebElement, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BreadCnv}}"
+                            VerticalAlignment="Center">
+                </TextBlock>
+            </WrapPanel>
+        </StackPanel>
+
+        <cn:WebElementsTreeUserControl WebContexts="{Binding WebContexts}"
+                                       SelectedWebElement="{Binding SelectedWebElement, Mode=TwoWay, Converter={StaticResource DbgCnv}}"
+                                       Grid.Row="2">
+
+        </cn:WebElementsTreeUserControl>
+    </Grid>
+</controls:MetroWindow>

@@ -26,6 +26,7 @@
         </Grid.RowDefinitions>
 
         <Menu>
+            <MenuItem Header="Select Element" Click="SelectMenuItem_Click"></MenuItem>
         </Menu>
         
         <TabControl Grid.Row="1">
@@ -75,7 +76,7 @@
                 </Grid>
             </TabItem>
             
-            <TabItem Header="Browser" IsSelected="True">
+            <TabItem Header="Browser" IsSelected="False">
 
                 <Grid>
                     <Grid.ColumnDefinitions>
