@@ -2,6 +2,7 @@
 {
     using ReactiveUI;
     using Sa.Ki.Test.DesktopApp.Models.SaKiMenu;
+    using Sa.Ki.Test.SakiTree;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -11,7 +12,7 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
 
-    public class WebElementInfoViewModel : ReactiveObject
+    public class WebElementInfoViewModel : ReactiveObject, ISakiTreeNode
     {
         protected WebElementInfo _sourceWebElement { get; set; }
 
@@ -93,17 +94,11 @@
             set => this.RaiseAndSetIfChanged(ref _isVisible, value);
         }
 
+        ISakiTreeCombinedNode ISakiTreeNode.Parent => Parent;
+
         public override string ToString()
         {
             return $"{ElementType} | {Name}";
-        }
-
-        public bool IsDescendantdOf(CombinedWebElementInfoViewModel combinedWebElementInfo)
-        {
-            if (combinedWebElementInfo == null) return false;
-            if (combinedWebElementInfo == Parent) return true;
-
-            return IsDescendantdOf(combinedWebElementInfo.Parent);
         }
     }
 }

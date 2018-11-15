@@ -96,6 +96,12 @@
                 {
                     case "Root":
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Context));
+                        group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Directory));
+                        break;
+                    case WebElementTypes.Directory:
+                        group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Context));
+                        group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Control));
+                        group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Directory));
                         break;
                     case WebElementTypes.Context:
                     case WebElementTypes.Control:
@@ -104,6 +110,7 @@
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.DropDown));
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.RadioGroup));
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Reference));
+                        group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Frame));
                         break;
                     default:
                         MessageBox.Show($"Unknown element type: {elementType} to create Create New menu items group");
@@ -143,7 +150,13 @@
                         description = $"RadioGroup WebElement is used to describe set of radio inputs, where just one valued could be selected";
                         break;
                     case WebElementTypes.Reference:
-                        description = $"Reference WebElement is used to referenc to any existed web element";
+                        description = $"Reference WebElement is used to create reference to any existed web element";
+                        break;
+                    case WebElementTypes.Directory:
+                        description = $"Directory WebElement is used to separate set of web elements to some logig group";
+                        break;
+                    case WebElementTypes.Frame:
+                        description = $"Frame WebElement is used to describe child frame web element that contains some existed Context";
                         break;
                     default:
                         MessageBox.Show($"Unknown element type: {elementType} to provide description");
@@ -178,17 +191,19 @@
                 switch (elementType)
                 {
                     case "Root":
+                        group.Items.Add(CreateActionsCommandMenuItem("Paste"));
                         break;
 
+                    case WebElementTypes.Directory:
                     case WebElementTypes.Context:
-                        group.Items.Add(CreateActionsCommandMenuItem("Delete"));
-                        group.Items.Add(CreateActionsCommandMenuItem("Paste"));
-                        group.Items.Add(CreateActionsCommandMenuItem("Clone"));
-                        break;
+
+                    case WebElementTypes.Frame:
+                    case WebElementTypes.Reference:
 
                     case WebElementTypes.Control:
                     case WebElementTypes.DropDown:
                     case WebElementTypes.RadioGroup:
+
                         group.Items.Add(CreateActionsCommandMenuItem("Delete"));
                         group.Items.Add(CreateActionsCommandMenuItem("Copy"));
                         group.Items.Add(CreateActionsCommandMenuItem("Cut"));

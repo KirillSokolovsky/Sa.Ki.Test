@@ -44,7 +44,8 @@
 
         public static Func<WebElementInfoViewModel, string> GetCreateUpdateWebElementValidator(
             WebElementsTreeUserControl webElementsTreeUserControl,
-            string originalName)
+            string originalName,
+            bool declineEmptyLocator = true)
         {
             Func<WebElementInfoViewModel, string> validator = el =>
             {
@@ -57,7 +58,7 @@
                     result.AppendLine("WebElement Name couldn't be empty");
                 if (string.IsNullOrWhiteSpace(el.Description))
                     result.AppendLine("WebElement Description couldn't be empty");
-                if (string.IsNullOrWhiteSpace(el.Locator.LocatorValue))
+                if (declineEmptyLocator && string.IsNullOrWhiteSpace(el.Locator.LocatorValue))
                     result.AppendLine("WebElement Locator.LocatorValue couldn't be empty");
 
                 return result.ToString();
@@ -92,7 +93,7 @@
         {
 
             List<string> existedNames = el.Parent == null
-                ? webElementsTreeUserControl.WebContexts?.Select(c => c.Name).ToList()
+                ? webElementsTreeUserControl.WebElements?.Select(c => c.Name).ToList()
                 : el.Parent.Elements?.Select(e => e.Name).ToList();
 
             if (originalName != null)

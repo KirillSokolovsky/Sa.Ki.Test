@@ -25,8 +25,8 @@
             var toRemove = Selected;
             if (Selected.Parent == null)
             {
-                if (toRemove is WebContextInfoViewModel wc)
-                    _webElementsTreeUserControl.WebContexts.Remove(wc);
+                if (toRemove is CombinedWebElementInfoViewModel wc)
+                    _webElementsTreeUserControl.WebElements.Remove(wc);
             }
             else
             {

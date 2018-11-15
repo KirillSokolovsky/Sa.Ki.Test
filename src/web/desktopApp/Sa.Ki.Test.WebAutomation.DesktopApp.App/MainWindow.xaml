@@ -34,44 +34,57 @@
             <TabItem Header="WebElements">
                 <Grid>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                    </Grid.RowDefinitions>
-
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="2*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <WrapPanel Grid.ColumnSpan="2">
-                        <Button Click="SaveWebElementsButton_Click">Save</Button>
-                    </WrapPanel>
+                    <Grid Grid.Column="0">
 
-                    <cn:WebElementsTreeUserControl  Grid.Row="1"
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        
+                        <WrapPanel Grid.Row="0">
+                            <Button Click="SaveWebElementsButton_Click">Save</Button>
+                        </WrapPanel>
+
+                        <cn:WebElementsTreeUserControl  Grid.Row="1"
                                         x:Name="Tree"
-                                        WebContexts="{Binding WebContexts}"
+                                        WebElements="{Binding WebElements}"
                                         SelectedWebElement="{Binding WebElement, Mode=TwoWay}">
-                    </cn:WebElementsTreeUserControl>
+                        </cn:WebElementsTreeUserControl>
 
-                    <cn:WebElementInfoUserControl Grid.Row="1" Grid.Column="1" 
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <cn:WebElementInfoUserControl Grid.Row="1" 
                                       WebElement="{Binding WebElement, UpdateSourceTrigger=PropertyChanged}" 
                                       IsReadOnly="True">
 
-                        <cn:WebElementInfoUserControl.Style>
-                            <Style TargetType="{x:Type cn:WebElementInfoUserControl}">
+                            <cn:WebElementInfoUserControl.Style>
+                                <Style TargetType="{x:Type cn:WebElementInfoUserControl}">
 
-                                <Setter Property="Visibility" Value="Visible"></Setter>
+                                    <Setter Property="Visibility" Value="Visible"></Setter>
 
-                                <Style.Triggers>
-                                    <Trigger Property="WebElement" Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </cn:WebElementInfoUserControl.Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="WebElement" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </cn:WebElementInfoUserControl.Style>
 
-                    </cn:WebElementInfoUserControl>
+                        </cn:WebElementInfoUserControl>
+
+                    </Grid>
 
                 </Grid>
             </TabItem>

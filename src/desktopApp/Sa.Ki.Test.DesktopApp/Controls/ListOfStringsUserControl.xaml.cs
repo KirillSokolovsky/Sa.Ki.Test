@@ -165,7 +165,7 @@ namespace Sa.Ki.Test.DesktopApp.Controls
         {
             if (string.IsNullOrWhiteSpace(NewStringItem)) return;
 
-            if (StringItems.Contains(NewStringItem))
+            if (StringItems?.Contains(NewStringItem) ?? false)
             {
                 MessageBox.Show($"Item: {NewStringItem} already exists",
                     "Warning",
@@ -174,6 +174,8 @@ namespace Sa.Ki.Test.DesktopApp.Controls
                 return;
             }
 
+            if (StringItems == null)
+                StringItems = new ObservableCollection<string>();
             StringItems.Add(NewStringItem);
 
             if (AvailableStringItems?.Contains(NewStringItem) ?? false)

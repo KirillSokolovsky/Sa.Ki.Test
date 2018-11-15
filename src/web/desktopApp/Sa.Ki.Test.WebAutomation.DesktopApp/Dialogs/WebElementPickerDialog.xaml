@@ -27,7 +27,7 @@
 
         <Menu Grid.Row="0">
             <MenuItem Header="Cancel" Click="CancelMenuItem_Click"></MenuItem>
-            <MenuItem Click="SelecMenuItem_Click">
+            <MenuItem Click="SelectMenuItem_Click">
                 <MenuItem.Style>
                     <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
                         <Setter Property="Header" Value="Select"></Setter>
@@ -68,9 +68,10 @@
             </WrapPanel>
         </StackPanel>
 
-        <cn:WebElementsTreeUserControl WebContexts="{Binding WebContexts}"
+        <cn:WebElementsTreeUserControl WebElements="{Binding WebElements}"
                                        SelectedWebElement="{Binding SelectedWebElement, Mode=TwoWay, Converter={StaticResource DbgCnv}}"
-                                       Grid.Row="2">
+                                       Grid.Row="2"
+                                       x:Name="TreeControl">
 
         </cn:WebElementsTreeUserControl>
     </Grid>

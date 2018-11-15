@@ -35,15 +35,15 @@
 
             if (textDialog.ShowDialog() != true) return;
 
-            var info = WebElementsViewModelsFactory.CreateInfoFromModel(Selected);
-            var model = WebElementsViewModelsFactory.CreateModelFromInfo(info);
+            var info = WebElementsViewModelsHelper.CreateInfoFromModel(Selected);
+            var model = WebElementsViewModelsHelper.CreateModelFromInfo(info);
             model.Name = textDialog.Text;
 
             if (Selected.Parent == null)
             {
-                if (model is WebContextInfoViewModel wc)
-                    _webElementsTreeUserControl.WebContexts.Add(wc);
-                else MessageBox.Show("WebElement to clone is not a WebContext. Magic Error.");
+                if (model is CombinedWebElementInfoViewModel wc)
+                    _webElementsTreeUserControl.WebElements.Add(wc);
+                else MessageBox.Show("WebElement to clone is not a CombinedWebElementInfoViewModel. Magic Error.");
             }
             else
             {

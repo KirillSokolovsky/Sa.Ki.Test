@@ -1,11 +1,12 @@
 ﻿namespace Sa.Ki.Test.WebAutomation
 {
+    using Sa.Ki.Test.SakiTree;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
 
-    public class WebElementInfo
+    public class WebElementInfo : ISakiTreeNode
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -18,6 +19,8 @@
         public List<string> Tags { get; set; }
 
         public CombinedWebElementInfo Parent { get; set; }
+
+        ISakiTreeCombinedNode ISakiTreeNode.Parent => Parent;
 
         public WebElementInfo()
         {

@@ -1,6 +1,7 @@
 ﻿namespace Sa.Ki.Test.WebAutomation.DesktopApp.Controls.WebElementsTreeUserControlCommands
 {
     using Sa.Ki.Test.WebAutomation.DesktopApp.Models;
+    using Sa.Ki.Test.SakiTree;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -41,8 +42,8 @@
 
             if (Copied != null)
             {
-                var info = WebElementsViewModelsFactory.CreateInfoFromModel(Copied);
-                model = WebElementsViewModelsFactory.CreateModelFromInfo(info);
+                var info = WebElementsViewModelsHelper.CreateInfoFromModel(Copied);
+                model = WebElementsViewModelsHelper.CreateModelFromInfo(info);
             }
             else
             {

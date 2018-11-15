@@ -54,7 +54,7 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
             IsEditMode = true;
             Title = $"Edit WebElement: {webElement.Name}";
             SourceWebElement = webElement;
-            WebElement = WebElementsViewModelsFactory.GetCopyOfBaseInformation(webElement);
+            WebElement = WebElementsViewModelsHelper.GetCopyOfBaseInformation(webElement);
             WebElement.Parent = webElement.Parent;
 
             InitializeComponent();
@@ -102,7 +102,7 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
 
             if (IsEditMode)
             {
-                WebElementsViewModelsFactory.FillModelWithBaseInfo(SourceWebElement, WebElement);
+                WebElementsViewModelsHelper.FillModelWithBaseInfo(SourceWebElement, WebElement);
                 WebElement = SourceWebElement;
             }
 

@@ -1,11 +1,12 @@
 ﻿namespace Sa.Ki.Test.WebAutomation
 {
+    using Sa.Ki.Test.SakiTree;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
 
-    public class CombinedWebElementInfo : WebElementInfo
+    public class CombinedWebElementInfo : WebElementInfo, ISakiTreeCombinedNode
     {
         public CombinedWebElementInfo()
         {
@@ -13,6 +14,8 @@
         }
 
         public List<WebElementInfo> Elements { get; set; }
+
+        public IEnumerable<ISakiTreeNode> Children => Elements;
 
         public override WebElementInfo GetCopyWithoutParent(WebElementInfo webElementInfo = null)
         {

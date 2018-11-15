@@ -22,12 +22,12 @@
 
         protected override void ExecuteCommand()
         {
-            var element = _webElementsTreeUserControl.SelectedWebElement;
             var validator = WebElementCommandsHelper.GetCreateUpdateWebElementValidator(
                 _webElementsTreeUserControl,
-                element.Name);
+                Selected.Name,
+                Selected.ElementType != WebElementTypes.Directory);
             
-            var editDialog = new WebElementCreateEditDialog(validator, element);
+            var editDialog = new WebElementCreateEditDialog(validator, Selected);
             if (editDialog.ShowDialog() != true) return;
         }
     }

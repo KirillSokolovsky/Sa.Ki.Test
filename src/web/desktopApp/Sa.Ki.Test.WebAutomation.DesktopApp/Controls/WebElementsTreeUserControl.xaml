@@ -145,7 +145,7 @@
                   ContextMenu="{StaticResource WebElementInfoTreeViewItemContextMenu}">
 
             <TreeViewItem Header="Web Contexts"
-                          ItemsSource="{Binding WebContexts}"
+                          ItemsSource="{Binding WebElements}"
                           IsExpanded="True"
                           ContextMenu="{StaticResource WebElementInfoTreeViewItemContextMenu}">
 

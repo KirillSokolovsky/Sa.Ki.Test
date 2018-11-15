@@ -42,7 +42,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sa.Ki.Test.WebAutomation.De
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sa.Ki.Test.DesktopApp.App", "src\desktopApp\Sa.Ki.Test.DesktopApp.App\Sa.Ki.Test.DesktopApp.App.csproj", "{B6DB64E5-F1B2-4880-86E7-8DA0952FF4CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sa.Ki.Test.WebAutomation.ElementsRepository", "src\web\Sa.Ki.Test.WebAutomation.ElementsRepository\Sa.Ki.Test.WebAutomation.ElementsRepository.csproj", "{9E41CFD7-39E8-4368-91A7-4DF6ADA11092}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sa.Ki.Test.WebAutomation.ElementsRepository", "src\web\Sa.Ki.Test.WebAutomation.ElementsRepository\Sa.Ki.Test.WebAutomation.ElementsRepository.csproj", "{9E41CFD7-39E8-4368-91A7-4DF6ADA11092}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

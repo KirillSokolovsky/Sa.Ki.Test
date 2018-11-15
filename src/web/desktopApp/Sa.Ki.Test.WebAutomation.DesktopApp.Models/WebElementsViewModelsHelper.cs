@@ -1,21 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-
-namespace Sa.Ki.Test.WebAutomation.DesktopApp.Models
+﻿namespace Sa.Ki.Test.WebAutomation.DesktopApp.Models
 {
-    public static class WebElementsViewModelsFactory
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using Sa.Ki.Test.SakiTree;
+
+    public static class WebElementsViewModelsHelper
     {
         public static WebElementInfoViewModel CreateModelFromInfo(WebElementInfo elementInfo)
         {
             switch (elementInfo)
             {
-                case WebContextInfo wc:
-                    return new WebContextInfoViewModel(wc);
+                case WebElementReference re:
+                    return new WebElementWithReferenceViewModel(re);
+                case FrameWebElementInfo wc:
+                    return new WebElementWithReferenceViewModel(wc);
                 case CombinedWebElementInfo cw:
                     return new CombinedWebElementInfoViewModel(cw);
                 default:
@@ -45,14 +48,47 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Models
                                 combined = new RadioGroupElementInfo();
                                 break;
 
-                            default:
+                            case WebElementTypes.Directory:
+                                combined = new WebElementsDirectory();
+                                break;
+
+                            case WebElementTypes.Control:
                                 combined = new CombinedWebElementInfo();
                                 break;
+
+                            default:
+                                throw new Exception($"Unexpected combinedModel.ElementType: {combinedModel.ElementType}");
                         }
                         info = combined;
                         combined.Elements = combinedModel.Elements
                             ?.Select(em => CreateInfoFromModel(em, combined))
                             .ToList();
+                    }
+                    break;
+
+                case WebElementWithReferenceViewModel wr:
+                    {
+                        switch(wr.ElementType)
+                        {
+                            case WebElementTypes.Frame:
+
+                                var f = new FrameWebElementInfo();
+                                f.Path = wr.ReferenceBreadString;
+                                info = f;
+
+                                break;
+                            case WebElementTypes.Reference:
+
+                                var r = new WebElementReference();
+                                r.Path = wr.ReferenceBreadString;
+                                info = r;
+
+                                break;
+
+                            default:
+                                throw new Exception($"Unexpected WebElementWithReferenceViewModel ElementType: {wr.ElementType}");
+
+                        }
                     }
                     break;
 
@@ -65,7 +101,7 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Models
             info.Description = model.Description;
             info.InnerKey = model.InnerKey;
             info.Tags = model.Tags?.ToList();
-            info.Locator = model.Locator.GetLocatorInfo();
+            info.Locator = model.Locator?.GetLocatorInfo();
             info.IsKey = model.IsKey;
             info.Parent = parent;
 
@@ -76,16 +112,19 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Models
         {
             switch (elementType)
             {
+                case WebElementTypes.Directory:
                 case WebElementTypes.Context:
-                    return new WebContextInfoViewModel();
                 case WebElementTypes.Control:
                 case WebElementTypes.DropDown:
                 case WebElementTypes.RadioGroup:
                     return new CombinedWebElementInfoViewModel();
+                case WebElementTypes.Frame:
+                case WebElementTypes.Reference:
+                    return new WebElementWithReferenceViewModel(WebElementTypes.Reference);
                 case WebElementTypes.Element:
                     return new WebElementInfoViewModel();
                 default:
-                    return null;
+                    throw new Exception($"Unknown WebElementTypes to create model: {elementType}");
             }
         }
 
@@ -140,7 +179,7 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Models
 
         public static void Filter(this ObservableCollection<CombinedWebElementInfoViewModel> contexts, Func<WebElementInfoViewModel, bool> filter, ref int resultsCount)
         {
-            if(contexts != null)
+            if (contexts != null)
             {
                 foreach (var c in contexts)
                 {
@@ -178,54 +217,35 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Models
             return result;
         }
 
-        private const string _webElementsHierarchyDelimeter = " > ";
-        public static string ToBreadString(this WebElementInfoViewModel webElementInfo)
+        public static WebElementInfoViewModel ClearAccrodingToBlocked(WebElementInfoViewModel webElementInfo,
+            List<string> blockedElementsBreadStrings,
+            List<string> blockedElementTypes)
         {
-            var el = webElementInfo;
-            var sb = new StringBuilder(el.Name);
-            el = el.Parent;
-
-            while (el != null)
-            {
-                sb.Insert(0, $"{el.Name}{_webElementsHierarchyDelimeter}");
-                el = el.Parent;
-            }
-
-            return sb.ToString();
-        }
-
-        public static WebElementInfoViewModel FindByBreadString(this ObservableCollection<CombinedWebElementInfoViewModel> combinedEls, string breadString)
-        {
-            var parts = breadString.Split(new[] { _webElementsHierarchyDelimeter }, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 0) return null;
-
-            var cEl = combinedEls?.FirstOrDefault(ce => ce.Name == parts[0]);
-            WebElementInfoViewModel result = cEl;
-
-            if (result != null && parts.Length > 0)
-            { 
-                result = FindByBreadString(cEl, parts.Skip(1));
-            }
-
-            return result;
-        }
-        private static WebElementInfoViewModel FindByBreadString(CombinedWebElementInfoViewModel combinedWebElement, IEnumerable<string> breadStrings)
-        {
-            if (combinedWebElement.Elements == null)
+            var breadStr = webElementInfo.GetTreePath();
+            if ((blockedElementsBreadStrings?.Contains(breadStr) ?? false) ||
+                (blockedElementTypes?.Contains(webElementInfo.ElementType) ?? false))
                 return null;
 
-            var name = breadStrings.First();
-
-            var el = combinedWebElement.Elements.FirstOrDefault(e => e.Name == name);
-            if (el == null) return null;
-            if (breadStrings.Count() == 1) return el;
-
-            if(el is CombinedWebElementInfoViewModel cwe)
+            if (webElementInfo is CombinedWebElementInfoViewModel cwe)
             {
-                return FindByBreadString(cwe, breadStrings.Skip(1));
+                if (cwe.Elements != null)
+                {
+                    for (int i = 0; i < cwe.Elements.Count; i++)
+                    {
+                        var cleared = ClearAccrodingToBlocked(cwe.Elements[i],
+                            blockedElementsBreadStrings,
+                            blockedElementTypes);
+
+                        if (cleared == null)
+                        {
+                            cwe.Elements.RemoveAt(i);
+                            i--;
+                        }
+                    }
+                }
             }
 
-            return null;
+            return webElementInfo;
         }
     }
 }

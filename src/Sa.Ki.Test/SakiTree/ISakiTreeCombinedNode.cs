@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Sa.Ki.Test.SakiTree
 {
-    public interface ISakiTreeNode
+    public interface ISakiTreeCombinedNode : ISakiTreeNode
     {
-        string Name { get; }
-        ISakiTreeCombinedNode Parent { get; }
+        IEnumerable<ISakiTreeNode> Children { get; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Sa.Ki.Test.WebAutomation.DesktopApp.Converters
 {
     using Sa.Ki.Test.WebAutomation.DesktopApp.Models;
+    using Sa.Ki.Test.SakiTree;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
@@ -16,7 +17,7 @@
         {
             if (!(value is WebElementInfoViewModel el)) return null;
 
-            return el.ToBreadString();
+            return el.GetTreePath();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

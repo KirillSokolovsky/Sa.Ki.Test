@@ -44,7 +44,7 @@
                 set => this.RaiseAndSetIfChanged(ref _webElement, value);
             }
 
-            public ObservableCollection<CombinedWebElementInfoViewModel> WebContexts { get; set; }
+            public ObservableCollection<CombinedWebElementInfoViewModel> WebElements { get; set; }
 
             private bool _isReadOnly;
             public bool IsReadOnly
@@ -69,15 +69,15 @@
             _webElementsRepository.Load();
 
             var model = new TempModel();
-            model.WebContexts = new ObservableCollection<CombinedWebElementInfoViewModel>();
+            model.WebElements = new ObservableCollection<CombinedWebElementInfoViewModel>();
 
-            _webElementsRepository.WebContexts.ForEach(wc =>
-                model.WebContexts.Add(new WebContextInfoViewModel(wc)));
+            _webElementsRepository.WebElements.ForEach(wc =>
+                model.WebElements.Add(new CombinedWebElementInfoViewModel(wc)));
 
             //for (int i = 1; i < 5; i++)
             //{
             //    var wc = TempDataGenerator.GenerateContext(i, 5);
-            //    model.WebContexts.Add(new WebContextInfoViewModel(wc));
+            //    model.WebElements.Add(new WebContextInfoViewModel(wc));
             //}
 
             this.DataContext = model;
@@ -87,19 +87,21 @@
 
         private void SaveWebElementsButton_Click(object sender, RoutedEventArgs e)
         {
-            _webElementsRepository.WebContexts = (DataContext as TempModel)
-                .WebContexts.Select(wc => WebElementsViewModelsFactory.CreateInfoFromModel(wc))
-                .Cast<WebContextInfo>().ToList();
+            _webElementsRepository.WebElements = (DataContext as TempModel)
+                .WebElements.Select(wc => WebElementsViewModelsHelper.CreateInfoFromModel(wc))
+                .Cast<CombinedWebElementInfo>().ToList();
 
             _webElementsRepository.Save();
         }
-
+        
         private void SelectMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var dc = DataContext as TempModel;
 
-            var d = new WebElementPickerDialog(dc.WebContexts.ToList(),
-                dc.WebContexts.First().Elements[1]);
+            var d = new WebElementPickerDialog(dc.WebElements.ToList(),
+                null,
+                null,
+                new List<string> { WebElementTypes.DropDown });
             d.ShowDialog();
         }
     }

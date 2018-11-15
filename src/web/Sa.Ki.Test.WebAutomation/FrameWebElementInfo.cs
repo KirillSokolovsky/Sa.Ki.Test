@@ -7,7 +7,7 @@
     public class FrameWebElementInfo : WebElementInfo
     {
         public WebContextInfo WebContext { get; set; }
-        public string WebContextName { get; set; }
+        public string Path { get; set; }
 
         public FrameWebElementInfo()
         {

@@ -17,7 +17,7 @@
             TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
         };
 
-        public List<WebContextInfo> WebContexts { get; set; }
+        public List<CombinedWebElementInfo> WebElements { get; set; }
         private string _storageFilePath;
         private FileInfo _storageFileInfo;
 
@@ -32,14 +32,14 @@
         {
             if (!_storageFileInfo.Exists)
             {
-                WebContexts = new List<WebContextInfo>();
+                WebElements = new List<CombinedWebElementInfo>();
                 return;
             }
 
             try
             {
                 var json = File.ReadAllText(_storageFilePath);
-                WebContexts = JsonConvert.DeserializeObject<List<WebContextInfo>>(json, JsonSerializerSettings);
+                WebElements = JsonConvert.DeserializeObject<List<CombinedWebElementInfo>>(json, JsonSerializerSettings);
             }
             catch(Exception ex)
             {
@@ -56,7 +56,7 @@
 
             try
             {
-                var json = JsonConvert.SerializeObject(WebContexts, JsonSerializerSettings);
+                var json = JsonConvert.SerializeObject(WebElements, JsonSerializerSettings);
                 File.WriteAllText(_storageFilePath, json);
             }
             catch(Exception ex)

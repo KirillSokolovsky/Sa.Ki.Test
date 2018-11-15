@@ -21,14 +21,14 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Controls
 {
     public partial class WebElementsTreeUserControl : UserControl
     {
-        public ObservableCollection<CombinedWebElementInfoViewModel> WebContexts
+        public ObservableCollection<CombinedWebElementInfoViewModel> WebElements
         {
-            get { return (ObservableCollection<CombinedWebElementInfoViewModel>)GetValue(WebContextsProperty); }
-            set { SetValue(WebContextsProperty, value); }
+            get { return (ObservableCollection<CombinedWebElementInfoViewModel>)GetValue(WebElementsProperty); }
+            set { SetValue(WebElementsProperty, value); }
         }
-        public static readonly DependencyProperty WebContextsProperty =
-            DependencyProperty.Register("WebContexts", typeof(ObservableCollection<CombinedWebElementInfoViewModel>), typeof(WebElementsTreeUserControl), new PropertyMetadata(null));
-
+        public static readonly DependencyProperty WebElementsProperty =
+            DependencyProperty.Register("WebElements", typeof(ObservableCollection<CombinedWebElementInfoViewModel>), typeof(WebElementsTreeUserControl), new PropertyMetadata(null));
+        
         public WebElementInfoViewModel SelectedWebElement
         {
             get { return (WebElementInfoViewModel)GetValue(SelectedWebElementProperty); }
@@ -38,11 +38,17 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Controls
             DependencyProperty.Register("SelectedWebElement", typeof(WebElementInfoViewModel), typeof(WebElementsTreeUserControl), new PropertyMetadata(null, OnSelectedWebElementChanged));
         private static void OnSelectedWebElementChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            Trace.WriteLine("new value");
             var model = e.NewValue as WebElementInfoViewModel;
             if (model != null)
             {
-                var tvi = SaKiWpfHelper.FindTreeViewItemForObject((sender as WebElementsTreeUserControl).WebElementsTreeView, model);
+                var tree = (sender as WebElementsTreeUserControl).WebElementsTreeView;
+                var tvi = SaKiWpfHelper.FindTreeViewItemForObject(tree, model);
+                if (tvi == null)
+                {
+                    tree.UpdateLayout();
+                    tvi = SaKiWpfHelper.FindTreeViewItemForObject(tree, model);
+                }
+
                 if (tvi != null)
                     tvi.SetValue(TreeViewItem.IsSelectedProperty, true);
             }
@@ -92,7 +98,7 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Controls
             Func<WebElementInfoViewModel, bool> filter = el => string.IsNullOrEmpty(text) || el.Name.ToLower().Contains(text);
 
             var resultsCount = 0;
-            WebContexts.Filter(filter, ref resultsCount);
+            WebElements.Filter(filter, ref resultsCount);
 
             if (!string.IsNullOrEmpty(text))
                 ResultsTextBlock.Text = $"{resultsCount} results.";

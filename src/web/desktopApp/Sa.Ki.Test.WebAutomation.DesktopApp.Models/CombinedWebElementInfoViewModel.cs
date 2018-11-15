@@ -1,6 +1,7 @@
 ﻿namespace Sa.Ki.Test.WebAutomation.DesktopApp.Models
 {
     using ReactiveUI;
+    using Sa.Ki.Test.SakiTree;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -8,7 +9,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    public class CombinedWebElementInfoViewModel : WebElementInfoViewModel
+    public class CombinedWebElementInfoViewModel : WebElementInfoViewModel, ISakiTreeCombinedNode
     {
         public CombinedWebElementInfoViewModel(CombinedWebElementInfo combinedWebElement = null)
             : base(combinedWebElement ?? new CombinedWebElementInfo())
@@ -20,7 +21,7 @@
                 Elements = new ObservableCollection<WebElementInfoViewModel>();
                 foreach (var item in items)
                 {
-                    var model = WebElementsViewModelsFactory.CreateModelFromInfo(item);
+                    var model = WebElementsViewModelsHelper.CreateModelFromInfo(item);
                     model.Parent = this;
                     Elements.Add(model);
                 }
@@ -34,12 +35,6 @@
             set => this.RaiseAndSetIfChanged(ref _elements, value);
         }
 
-
-        public bool IsAscendantFor(WebElementInfoViewModel elementInfo)
-        {
-            if (elementInfo == null) return false;
-            if (Elements == null) return false;
-            return Elements.Any(child => (child as CombinedWebElementInfoViewModel)?.IsAscendantFor(elementInfo) ?? false);
-        }
+        public IEnumerable<ISakiTreeNode> Children => Elements;
     }
 }
