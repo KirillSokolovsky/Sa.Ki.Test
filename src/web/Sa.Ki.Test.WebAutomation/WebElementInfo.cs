@@ -6,7 +6,7 @@
     using System.Linq;
     using System.Text;
 
-    public class WebElementInfo : ISakiTreeNode
+    public class WebElementInfo : ISakiTreeNode, IWebElementInfo
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -22,6 +22,10 @@
 
         ISakiTreeCombinedNode ISakiTreeNode.Parent => Parent;
 
+        IWebLocatorInfo IWebElementInfo.Locator => Locator;
+
+        ICombinedWebElementInfo IWebElementInfo.Parent => Parent;
+
         public WebElementInfo()
         {
             ElementType = WebElementTypes.Element;
@@ -32,7 +36,7 @@
         public WebSearchInfo GetWebSearch(bool reBuild = false)
         {
             if (_webSearch == null || reBuild)
-                _webSearch = WebSearchInfo.BuildWebSearch(this);
+                _webSearch = WebElementsHelper.BuildWebSearch(this);
             return _webSearch;
         }
 

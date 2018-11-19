@@ -28,6 +28,7 @@
                 Selected.ElementType != WebElementTypes.Directory);
             
             var editDialog = new WebElementCreateEditDialog(validator, Selected);
+            editDialog.WebElements = _webElementsTreeUserControl.WebElements;
             if (editDialog.ShowDialog() != true) return;
         }
     }

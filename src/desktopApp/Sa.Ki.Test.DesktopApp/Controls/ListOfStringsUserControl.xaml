@@ -80,7 +80,7 @@
 
         </Grid>
 
-        <ListBox Name="StringItemsListBox" Grid.Row="1" ItemsSource="{Binding StringItems}" Margin="1"
+        <ListBox Name="StringItemsListBox" Grid.Row="1" ItemsSource="{Binding StringItems, Mode=TwoWay}" Margin="1"
                  SelectedItem="{Binding SelectedStringItem}"
                  IsSynchronizedWithCurrentItem="True">
             

@@ -2,6 +2,7 @@
 using Sa.Ki.Test.WebAutomation.DesktopApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,6 +43,16 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
         public static readonly DependencyProperty IsEditModeProperty =
             DependencyProperty.Register("IsEditMode", typeof(bool), typeof(WebElementCreateEditDialog), new PropertyMetadata(false));
 
+        public ObservableCollection<CombinedWebElementInfoViewModel> WebElements
+        {
+            get { return (ObservableCollection<CombinedWebElementInfoViewModel>)GetValue(WebElementsProperty); }
+            set { SetValue(WebElementsProperty, value); }
+        }
+        public static readonly DependencyProperty WebElementsProperty =
+            DependencyProperty.Register("WebElements", typeof(ObservableCollection<CombinedWebElementInfoViewModel>), typeof(WebElementCreateEditDialog), new PropertyMetadata(null));
+
+
+
         private Func<WebElementInfoViewModel, string> _validate;
 
         public WebElementCreateEditDialog(Func<WebElementInfoViewModel, string> validate, WebElementInfoViewModel webElement)
@@ -75,7 +86,7 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
                 Title = $"Specify new WebElement with role {prefilledInnerKey}";
 
             IsEditMode = false;
-            WebElement = new WebElementInfoViewModel
+            WebElement = new WebElementWithReferenceViewModel
             {
                 ElementType = elementType,
                 Description = prefilledDescription,

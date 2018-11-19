@@ -4,20 +4,22 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class WebLocatorInfo
+    public class WebLocatorInfo : IWebLocatorInfo
     {
         public string LocatorValue { get; set; }
         public WebLocatorType LocatorType { get; set; }
         public bool IsRelative { get; set; }
 
-        public WebLocatorInfo GetCopy()
+        public virtual WebLocatorInfo GetCopy(WebLocatorInfo webLocatorInfo = null)
         {
-            return new WebLocatorInfo
-            {
-                IsRelative = IsRelative,
-                LocatorType = LocatorType,
-                LocatorValue = LocatorValue
-            };
+            if (webLocatorInfo == null)
+                webLocatorInfo = new WebLocatorInfo();
+
+            webLocatorInfo.IsRelative = IsRelative;
+            webLocatorInfo.LocatorType = LocatorType;
+            webLocatorInfo.LocatorValue = LocatorValue;
+
+            return webLocatorInfo;
         }
     }
 }

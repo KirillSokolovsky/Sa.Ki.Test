@@ -12,7 +12,7 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
 
-    public class WebElementInfoViewModel : ReactiveObject, ISakiTreeNode
+    public class WebElementInfoViewModel : ReactiveObject, ISakiTreeNode, IWebElementInfo
     {
         protected WebElementInfo _sourceWebElement { get; set; }
 
@@ -28,7 +28,8 @@
 
             if (_sourceWebElement.Tags != null)
                 Tags = new ObservableCollection<string>(_sourceWebElement.Tags);
-            Locator = new WebLocatorInfoViewModel(_sourceWebElement.Locator);
+
+            Locator = WebElementsViewModelsHelper.CreateLocatorModel(_sourceWebElement.Locator);
         }
 
         private CombinedWebElementInfoViewModel _parent;
@@ -96,9 +97,18 @@
 
         ISakiTreeCombinedNode ISakiTreeNode.Parent => Parent;
 
+        IWebLocatorInfo IWebElementInfo.Locator => Locator;
+
+        ICombinedWebElementInfo IWebElementInfo.Parent => Parent;
+
         public override string ToString()
         {
             return $"{ElementType} | {Name}";
+        }
+
+        public WebSearchInfo GetWebSearch(bool reBuild = false)
+        {
+            return WebElementsHelper.BuildWebSearch(this);
         }
     }
 }

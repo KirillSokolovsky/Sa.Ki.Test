@@ -6,7 +6,7 @@
     using System.Linq;
     using System.Text;
 
-    public class CombinedWebElementInfo : WebElementInfo, ISakiTreeCombinedNode
+    public class CombinedWebElementInfo : WebElementInfo, ISakiTreeCombinedNode, ICombinedWebElementInfo
     {
         public CombinedWebElementInfo()
         {
@@ -16,6 +16,8 @@
         public List<WebElementInfo> Elements { get; set; }
 
         public IEnumerable<ISakiTreeNode> Children => Elements;
+
+        IEnumerable<IWebElementInfo> ICombinedWebElementInfo.Elements => Elements;
 
         public override WebElementInfo GetCopyWithoutParent(WebElementInfo webElementInfo = null)
         {

@@ -9,7 +9,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    public class CombinedWebElementInfoViewModel : WebElementInfoViewModel, ISakiTreeCombinedNode
+    public class CombinedWebElementInfoViewModel : WebElementInfoViewModel, ISakiTreeCombinedNode, ICombinedWebElementInfo
     {
         public CombinedWebElementInfoViewModel(CombinedWebElementInfo combinedWebElement = null)
             : base(combinedWebElement ?? new CombinedWebElementInfo())
@@ -36,5 +36,7 @@
         }
 
         public IEnumerable<ISakiTreeNode> Children => Elements;
+
+        IEnumerable<IWebElementInfo> ICombinedWebElementInfo.Elements => Elements;
     }
 }

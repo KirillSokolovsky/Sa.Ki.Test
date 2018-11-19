@@ -4,10 +4,12 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class FrameWebElementInfo : WebElementInfo
+    public class FrameWebElementInfo : WebElementInfo, IWebElementWithReferenceInfo
     {
-        public WebContextInfo WebContext { get; set; }
-        public string Path { get; set; }
+        public WebElementInfo InnerElement { get; set; }
+        public string TreePathToInnerElement { get; set; }
+
+        IWebElementInfo IWebElementWithReferenceInfo.ReferencedElement => InnerElement;
 
         public FrameWebElementInfo()
         {

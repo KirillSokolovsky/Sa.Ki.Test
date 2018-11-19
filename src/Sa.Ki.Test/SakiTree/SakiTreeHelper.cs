@@ -9,19 +9,21 @@
     {
         public const string TreePathStringDelimeter = " > ";
 
-        public static bool IsDescendantdOf(this ISakiTreeNode node, ISakiTreeCombinedNode combinedNode)
+        public static bool IsDescendantdFor(this ISakiTreeNode node, ISakiTreeCombinedNode combinedNode)
         {
             if (combinedNode == null) return false;
-            if (combinedNode == node.Parent) return true;
+            if (node == null) return false;
+            if (node.Parent == null) return false;
+            if (node.Parent == combinedNode) return true;
 
-            return node.IsDescendantdOf(combinedNode.Parent);
+            return combinedNode.Children
+                ?.Any(c => node.IsDescendantdFor(c as ISakiTreeCombinedNode)) 
+                ?? false;
         }
 
-        public static bool IsAscendantFor(this ISakiTreeCombinedNode combinedNode, ISakiTreeNode node)
+        public static bool HasAscendant(this ISakiTreeNode node, ISakiTreeCombinedNode combinedNode)
         {
-            if (node == null) return false;
-            if (combinedNode.Children == null) return false;
-            return combinedNode.Children.Any(child => (child as ISakiTreeCombinedNode)?.IsAscendantFor(node) ?? false);
+            return !node.IsDescendantdFor(combinedNode);
         }
 
         public static string GetTreePath(this ISakiTreeNode sakiTreeNode, string nodesHierarchyDelimeter = TreePathStringDelimeter)

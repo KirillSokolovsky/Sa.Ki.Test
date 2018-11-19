@@ -135,10 +135,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\WebElementInfoUserControlCommon\WebElementInfoDetailsTemplateSelector.cs" />
     <Compile Include="Controls\WebElementLocatorsPathUserControl.xaml.cs">
       <DependentUpon>WebElementLocatorsPathUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\WebElementToBreadStringConverter.cs" />
+    <Compile Include="Converters\TreePathToWebElementConverter.cs" />
+    <Compile Include="Converters\WebElementToTreePathConverter.cs" />
     <Compile Include="Converters\WebElementToLocatorsPathConverter.cs" />
     <Compile Include="Dialogs\WebElementCreateEditDialog.xaml.cs">
       <DependentUpon>WebElementCreateEditDialog.xaml</DependentUpon>

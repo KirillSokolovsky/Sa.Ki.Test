@@ -69,14 +69,7 @@
             }
             else if (_elementType == WebElementTypes.Reference || _elementType == WebElementTypes.Frame)
             {
-                var blockedTypesToPick = new List<string> { WebElementTypes.Reference };
-                if(_elementType == WebElementTypes.Frame)
-                {
-                    blockedTypesToPick.Add(WebElementTypes.Frame);
-                    blockedTypesToPick.Add(WebElementTypes.Element);
-                    blockedTypesToPick.Add(WebElementTypes.RadioGroup);
-                    blockedTypesToPick.Add(WebElementTypes.DropDown);
-                }
+                var blockedTypesToPick = WebElementsViewModelsHelper.GetBlockedElementTypesForElementType(_elementType);
 
                 var picker = new WebElementPickerDialog(_webElementsTreeUserControl.WebElements.ToList(),
                     null,
@@ -86,7 +79,7 @@
                 if (picker.ShowDialog() != true) return;
 
                 (createdWebElement as WebElementWithReferenceViewModel).ReferenceBreadString 
-                    = picker.SelectedWebElement.GetTreePath();
+                    = picker.SelectedWebElementTreePath;
             }
 
             if (Selected == null)

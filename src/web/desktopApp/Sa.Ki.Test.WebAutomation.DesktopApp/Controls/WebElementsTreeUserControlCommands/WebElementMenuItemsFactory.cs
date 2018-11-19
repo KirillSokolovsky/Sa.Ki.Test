@@ -42,8 +42,7 @@
                 if (WebElementCommandsHelper.CanElementHasCustomChildren(elementInfo))
                     items.Add(CreateCreateMenuItemGroup(et));
 
-                if (elementInfo != null)
-                    items.Add(CreateActionsMenuItemGroup(et, p));
+                items.Add(CreateActionsMenuItemGroup(et, p));
 
                 _menusCache[key] = items;
             }
@@ -195,6 +194,10 @@
                         break;
 
                     case WebElementTypes.Directory:
+                        group.Items.Add(CreateActionsCommandMenuItem("Delete"));
+                        group.Items.Add(CreateActionsCommandMenuItem("Cut"));
+                        group.Items.Add(CreateActionsCommandMenuItem("Paste"));
+                        break;
                     case WebElementTypes.Context:
 
                     case WebElementTypes.Frame:

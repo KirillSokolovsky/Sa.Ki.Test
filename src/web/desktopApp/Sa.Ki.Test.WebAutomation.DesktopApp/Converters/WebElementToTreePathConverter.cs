@@ -9,9 +9,11 @@
     using System.Text;
     using System.Threading.Tasks;
     using System.Windows.Data;
+    using System.Windows;
+    using System.Collections.ObjectModel;
 
     [ValueConversion(typeof(WebElementInfoViewModel), typeof(string))]
-    public class WebElementToBreadStringConverter : IValueConverter
+    public class WebElementToTreePathConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

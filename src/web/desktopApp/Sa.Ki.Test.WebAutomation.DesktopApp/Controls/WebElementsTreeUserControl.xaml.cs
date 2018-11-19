@@ -45,12 +45,15 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Controls
                 var tvi = SaKiWpfHelper.FindTreeViewItemForObject(tree, model);
                 if (tvi == null)
                 {
-                    tree.UpdateLayout();
+                    SaKiWpfHelper.ExpandCollapseItemsControl(tree);
                     tvi = SaKiWpfHelper.FindTreeViewItemForObject(tree, model);
                 }
 
                 if (tvi != null)
+                {
+                    ExpandElementTree(model, tree);
                     tvi.SetValue(TreeViewItem.IsSelectedProperty, true);
+                }
             }
             else
             {
@@ -63,6 +66,28 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Controls
                 }
             }
         }
+        private static void ExpandElementTree(WebElementInfoViewModel model, ItemsControl control)
+        {
+            var stack = new Stack<WebElementInfoViewModel>();
+            var p = model.Parent;
+            while(p != null)
+            {
+                stack.Push(p);
+                p = p.Parent;
+            }
+
+            while(stack.Count != 0)
+            {
+                var el = stack.Pop();
+                ExpandElementTreeItem(el, control);
+            }
+        }
+        private static void ExpandElementTreeItem(WebElementInfoViewModel model, ItemsControl control)
+        {
+            var tvi = SaKiWpfHelper.FindTreeViewItemForObject(control, model);
+            tvi?.SetValue(TreeViewItem.IsExpandedProperty, true);
+        }
+
 
         public WebElementInfoViewModel CopiedWebElement
         {

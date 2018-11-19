@@ -5,9 +5,9 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class SaKiWebAutomationException : SaKiException
+    public class SakiWebAutomationException : SaKiException
     {
-        public SaKiWebAutomationException(string message, Exception innerException = null) 
+        public SakiWebAutomationException(string message, Exception innerException = null) 
             : base(nameof(WebAutomation), message, innerException)
         {
         }

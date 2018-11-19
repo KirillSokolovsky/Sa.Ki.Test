@@ -8,17 +8,17 @@
     using ReactiveUI;
     using Sa.Ki.Test.SakiTree;
 
-    public class WebElementWithReferenceViewModel : WebElementInfoViewModel
+    public class WebElementWithReferenceViewModel : WebElementInfoViewModel, IWebElementWithReferenceInfo
     {
         public WebElementWithReferenceViewModel(FrameWebElementInfo frameWebElement)
             : base(frameWebElement)
         {
-            ReferenceBreadString = frameWebElement.Path;
+            ReferenceBreadString = frameWebElement.TreePathToInnerElement;
         }
         public WebElementWithReferenceViewModel(WebElementReference webElementReference)
             : base(webElementReference)
         {
-            ReferenceBreadString = webElementReference.Path;
+            ReferenceBreadString = webElementReference.TreePathToReferencedElement;
         }
 
         public WebElementWithReferenceViewModel(string elementType)
@@ -27,11 +27,25 @@
             ElementType = elementType;
         }
 
+        public WebElementWithReferenceViewModel()
+        {
+
+        }
+
         private string _referenceBreadString;
         public string ReferenceBreadString
         {
             get => _referenceBreadString;
             set => this.RaiseAndSetIfChanged(ref _referenceBreadString, value);
         }
+
+        public WebElementInfoViewModel _referencedWebElement;
+        public WebElementInfoViewModel ReferencedWebElement
+        {
+            get => _referencedWebElement;
+            set => this.RaiseAndSetIfChanged(ref _referencedWebElement, value);
+        }
+
+        public IWebElementInfo ReferencedElement => ReferencedWebElement;
     }
 }

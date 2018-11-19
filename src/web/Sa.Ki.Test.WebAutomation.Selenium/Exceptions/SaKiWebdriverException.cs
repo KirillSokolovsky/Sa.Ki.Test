@@ -5,7 +5,7 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class SaKiWebdriverException : SaKiWebAutomationException
+    public class SaKiWebdriverException : SakiWebAutomationException
     {
         public static SaKiWebdriverException ErrorDuring(string processDesc, Exception exception)
             => new SaKiWebdriverException($"Error occureed during {processDesc}", exception);

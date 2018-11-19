@@ -22,7 +22,7 @@
         </Grid.RowDefinitions>
         
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
@@ -46,13 +46,16 @@
         <GroupBox Margin="5" Grid.Column="0" Grid.Row="1"
                   Header="Change:">
 
-            <cn:WebElementInfoUserControl WebElement="{Binding WebElement}">
+            <cn:WebElementInfoUserControl WebElement="{Binding WebElement}" WebElements="{Binding WebElements}">
 
             </cn:WebElementInfoUserControl>
 
         </GroupBox>
 
-        <GridSplitter Grid.Column="1" Width="4px" VerticalAlignment="Stretch" HorizontalAlignment="Center" 
+        <GridSplitter Grid.Column="1" Width="4px" VerticalAlignment="Stretch"
+                      Height="Auto"
+                      ResizeDirection="Columns"
+                      ResizeBehavior="PreviousAndNext"
                       Margin="1 0 1 0"
                       Grid.Row="1">
 

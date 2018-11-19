@@ -18,11 +18,12 @@
             if (!(values[1] is WebElementInfoViewModel webElement))
                 return null;
 
-            var ws = BuildWebSearch(webElement);
+            var ws = webElement.GetWebSearch();
+            var wsModel = WebElementsViewModelsHelper.CreateWebSearchModelFromInfo(ws);
 
             var list = new List<WebSearchInfoModel>();
 
-            var cur = ws;
+            var cur = wsModel;
             while (cur != null)
             {
                 list.Add(cur);
@@ -37,50 +38,6 @@
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException("WebElementToLocatorsPathConverter doesn't support back convertation");
-        }
-
-
-        public static WebSearchInfoModel BuildWebSearch(WebElementInfoViewModel elementInfo)
-        {
-            var locator = elementInfo.Locator;
-
-            if (!elementInfo.Locator.IsRelative || elementInfo.Parent == null)
-            {
-                return new WebSearchInfoModel
-                {
-                    ParentSearch = null,
-                    LocatorType = locator.LocatorType,
-                    LocatorValue = locator.LocatorValue
-                };
-            }
-
-            var currentSearch = new WebSearchInfoModel
-            {
-                LocatorType = locator.LocatorType,
-                LocatorValue = locator.LocatorValue
-            };
-            var parentSearch = BuildWebSearch(elementInfo.Parent);
-
-            if (parentSearch.LocatorType == currentSearch.LocatorType
-                && (currentSearch.LocatorType == WebLocatorType.Css
-                 || currentSearch.LocatorType == WebLocatorType.XPath))
-            {
-                if (currentSearch.LocatorType == WebLocatorType.XPath)
-                {
-                    currentSearch.LocatorValue = WebSearchInfo.MergeXPath(parentSearch.LocatorValue, currentSearch.LocatorValue);
-                }
-                else
-                {
-                    currentSearch.LocatorValue = WebSearchInfo.MergeCss(parentSearch.LocatorValue, currentSearch.LocatorValue);
-                }
-                currentSearch.ParentSearch = parentSearch.ParentSearch;
-            }
-            else
-            {
-                currentSearch.ParentSearch = parentSearch;
-            }
-
-            return currentSearch;
         }
     }
 }

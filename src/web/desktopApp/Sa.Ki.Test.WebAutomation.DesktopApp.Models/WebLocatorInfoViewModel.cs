@@ -8,7 +8,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    public class WebLocatorInfoViewModel : ReactiveObject
+    public class WebLocatorInfoViewModel : ReactiveObject, IWebLocatorInfo
     {
         private WebLocatorInfo _sourceLocatorInfo { get; set; }
 
@@ -48,8 +48,6 @@
             set => this.RaiseAndSetIfChanged(ref _isRelative, value);
         }
 
-
-
         private string _value;
         public string Value
         {
@@ -73,14 +71,15 @@
             }
         }
 
-        public WebLocatorInfo GetLocatorInfo()
+        public virtual WebLocatorInfo GetLocatorInfo(WebLocatorInfo locatorInfo = null)
         {
-            return new WebLocatorInfo
-            {
-                IsRelative = IsRelative,
-                LocatorType = LocatorType,
-                LocatorValue = LocatorValue
-            };
+            locatorInfo = locatorInfo ?? new WebLocatorInfo();
+
+            locatorInfo.IsRelative = IsRelative;
+            locatorInfo.LocatorType = LocatorType;
+            locatorInfo.LocatorValue = LocatorValue;
+
+            return locatorInfo;
         }
     }
 }

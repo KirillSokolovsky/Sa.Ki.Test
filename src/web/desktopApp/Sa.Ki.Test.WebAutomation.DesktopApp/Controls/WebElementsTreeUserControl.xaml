@@ -91,7 +91,7 @@
 
             <da:BindingProxy x:Key="BindingProxy" Data="{Binding}"></da:BindingProxy>
             <cnv:WebElementToCommandsConverter x:Key="CmdCnv" 
-                                                     TreeControl="{Binding Data, Source={StaticResource BindingProxy}}">
+                                               TreeControl="{Binding Data, Source={StaticResource BindingProxy}}">
             </cnv:WebElementToCommandsConverter>
 
             <ContextMenu x:Key="WebElementInfoTreeViewItemContextMenu"
@@ -144,7 +144,7 @@
                   SelectedItemChanged="WebElementsTreeView_SelectedItemChanged"
                   ContextMenu="{StaticResource WebElementInfoTreeViewItemContextMenu}">
 
-            <TreeViewItem Header="Web Contexts"
+            <TreeViewItem Header="Web Elements"
                           ItemsSource="{Binding WebElements}"
                           IsExpanded="True"
                           ContextMenu="{StaticResource WebElementInfoTreeViewItemContextMenu}">

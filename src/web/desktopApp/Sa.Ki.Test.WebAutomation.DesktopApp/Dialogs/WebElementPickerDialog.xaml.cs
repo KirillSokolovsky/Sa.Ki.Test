@@ -28,22 +28,6 @@
         public static readonly DependencyProperty WebElementsProperty =
             DependencyProperty.Register("WebElements", typeof(ObservableCollection<CombinedWebElementInfoViewModel>), typeof(WebElementPickerDialog), new PropertyMetadata(null));
 
-        public WebElementInfoViewModel SelectedWebElement
-        {
-            get { return (WebElementInfoViewModel)GetValue(SelectedWebElementProperty); }
-            set { SetValue(SelectedWebElementProperty, value); }
-        }
-        public static readonly DependencyProperty SelectedWebElementProperty =
-            DependencyProperty.Register("SelectedWebElement", typeof(WebElementInfoViewModel), typeof(WebElementPickerDialog), new PropertyMetadata(null));
-
-        public WebElementInfoViewModel OriginalWebElement
-        {
-            get { return (WebElementInfoViewModel)GetValue(OriginalWebElementProperty); }
-            set { SetValue(OriginalWebElementProperty, value); }
-        }
-        public static readonly DependencyProperty OriginalWebElementProperty =
-            DependencyProperty.Register("OriginalWebElement", typeof(WebElementInfoViewModel), typeof(WebElementPickerDialog), new PropertyMetadata(null));
-
         public bool IsEditMode
         {
             get { return (bool)GetValue(IsEditModeProperty); }
@@ -52,9 +36,25 @@
         public static readonly DependencyProperty IsEditModeProperty =
             DependencyProperty.Register("IsEditMode", typeof(bool), typeof(WebElementPickerDialog), new PropertyMetadata(false));
 
+        public string SelectedWebElementTreePath
+        {
+            get { return (string)GetValue(SelectedWebElementTreePathProperty); }
+            set { SetValue(SelectedWebElementTreePathProperty, value); }
+        }
+        public static readonly DependencyProperty SelectedWebElementTreePathProperty =
+            DependencyProperty.Register("SelectedWebElementTreePath", typeof(string), typeof(WebElementPickerDialog), new PropertyMetadata(null));
+
+        public string OriginalWebElementTreePath
+        {
+            get { return (string)GetValue(OriginalWebElementTreePathProperty); }
+            set { SetValue(OriginalWebElementTreePathProperty, value); }
+        }
+        public static readonly DependencyProperty OriginalWebElementTreePathProperty =
+            DependencyProperty.Register("OriginalWebElementTreePath", typeof(string), typeof(WebElementPickerDialog), new PropertyMetadata(null));
+
         public WebElementPickerDialog(
             List<CombinedWebElementInfoViewModel> contexts,
-            WebElementInfoViewModel originalWebElement = null,
+            string originalWebElementTreePath = null,
             List<string> blockedElementsBreadStrings = null,
             List<string> blockedElementTypes = null)
         {
@@ -62,15 +62,15 @@
 
             DataContext = this;
 
-            Prepare(contexts, originalWebElement, blockedElementsBreadStrings, blockedElementTypes);
+            Prepare(contexts, originalWebElementTreePath, blockedElementsBreadStrings, blockedElementTypes);
         }
 
         public void Prepare(List<CombinedWebElementInfoViewModel> contexts,
-            WebElementInfoViewModel originalWebElement,
+            string originalWebElementTreePath,
             List<string> blockedElementsBreadStrings,
             List<string> blockedElementTypes)
         {
-            IsEditMode = originalWebElement != null;
+            IsEditMode = originalWebElementTreePath != null;
 
             WebElements = new ObservableCollection<CombinedWebElementInfoViewModel>();
             foreach (var context in contexts)
@@ -81,15 +81,14 @@
                     blockedElementsBreadStrings,
                     blockedElementTypes);
                 if (cleared != null)
-                    WebElements.Add(cleared as CombinedWebElementInfoViewModel);
+                    WebElements.Add((CombinedWebElementInfoViewModel)cleared);
             }
 
-            OriginalWebElement = originalWebElement;
+            OriginalWebElementTreePath = originalWebElementTreePath;
 
-            if (OriginalWebElement != null)
+            if (OriginalWebElementTreePath != null)
             {
-                //TreeControl.WebElementsTreeView.UpdateLayout();
-                SelectedWebElement = (WebElementInfoViewModel)WebElements.FindNodeByTreePath(OriginalWebElement.GetTreePath());
+                SelectedWebElementTreePath = OriginalWebElementTreePath;
             }
         }
 
@@ -101,17 +100,30 @@
 
         private void SelectMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedWebElement == null)
+            if (SelectedWebElementTreePath == null)
             {
                 MessageBox.Show("Nothing is selected.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            if (SelectedWebElement.ElementType == WebElementTypes.Directory)
+            var element = (WebElementInfoViewModel)WebElements.FindNodeByTreePath(SelectedWebElementTreePath);
+            if(element == null)
+            {
+                MessageBox.Show("Magic!!! Element not found by path.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (element.ElementType == WebElementTypes.Directory)
             {
                 MessageBox.Show("Directory couldn't be selected.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             DialogResult = true;
+        }
+
+        private void SelectSelectedButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selected = SelectedWebElementTreePath ?? OriginalWebElementTreePath;
+            SelectedWebElementTreePath = null;
+            SelectedWebElementTreePath = selected;
         }
     }
 }

@@ -8,11 +8,18 @@
                       xmlns:cn="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Controls"
                       xmlns:cnv="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Converters"
                       xmlns:dacnv="clr-namespace:Sa.Ki.Test.DesktopApp.Converters;assembly=Sa.Ki.Test.DesktopApp"
+                      xmlns:da="clr-namespace:Sa.Ki.Test.DesktopApp;assembly=Sa.Ki.Test.DesktopApp"
                       mc:Ignorable="d"
                       Title="WebElementPickerDialog" Height="450" Width="800">
 
     <controls:MetroWindow.Resources>
-        <cnv:WebElementToBreadStringConverter x:Key="BreadCnv"></cnv:WebElementToBreadStringConverter>
+
+        <da:BindingProxy x:Key="BindingProxy" Data="{Binding}"></da:BindingProxy>
+        
+        <cnv:TreePathToWebElementConverter x:Key="TreePathToWebElementCnv"
+                                           WebElements="{Binding Data.WebElements, Source={StaticResource BindingProxy}}">
+            
+        </cnv:TreePathToWebElementConverter>
 
         <dacnv:DebugConverter x:Key="DbgCnv"></dacnv:DebugConverter>
     </controls:MetroWindow.Resources>
@@ -43,8 +50,8 @@
 
         <StackPanel Grid.Row="1">
             <WrapPanel Margin="5">
-                <TextBlock Text=" Original: " VerticalAlignment="Center"></TextBlock>
-                <TextBlock Text="{Binding OriginalWebElement, Converter={StaticResource BreadCnv}}"
+                <TextBlock Text="  Original: " VerticalAlignment="Center" Padding="1"></TextBlock>
+                <TextBlock Text="{Binding OriginalWebElementTreePath}"
                             VerticalAlignment="Center">
                 </TextBlock>
 
@@ -61,15 +68,27 @@
 
             </WrapPanel>
             <WrapPanel Margin="5">
-                <TextBlock Text="Selected: " VerticalAlignment="Center"></TextBlock>
-                <TextBlock Text="{Binding SelectedWebElement, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BreadCnv}}"
+                
+                <Button Content="Selected:" VerticalAlignment="Center" 
+                        BorderThickness="1"
+                        Background="Transparent"
+                        Margin="0 0 5 0"
+                        Padding="1"
+                        Click="SelectSelectedButton_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <TextBlock Text="{Binding SelectedWebElementTreePath, UpdateSourceTrigger=PropertyChanged}"
                             VerticalAlignment="Center">
                 </TextBlock>
             </WrapPanel>
         </StackPanel>
 
         <cn:WebElementsTreeUserControl WebElements="{Binding WebElements}"
-                                       SelectedWebElement="{Binding SelectedWebElement, Mode=TwoWay, Converter={StaticResource DbgCnv}}"
+                                       SelectedWebElement="{Binding SelectedWebElementTreePath, Mode=TwoWay, Converter={StaticResource TreePathToWebElementCnv}}"
                                        Grid.Row="2"
                                        x:Name="TreeControl">
 

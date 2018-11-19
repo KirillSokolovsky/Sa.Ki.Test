@@ -9,8 +9,15 @@
 
     public class WebSearchInfoModel : ReactiveObject
     {
-        public WebSearchInfoModel()
+        public WebSearchInfoModel(WebSearchInfo webSearchInfo = null)
         {
+            if (webSearchInfo != null)
+            {
+                LocatorType = webSearchInfo.LocatorType;
+                LocatorValue = webSearchInfo.LocatorValue;
+                if (webSearchInfo.ParentSearch != null)
+                    ParentSearch = WebElementsViewModelsHelper.CreateWebSearchModelFromInfo(webSearchInfo.ParentSearch);
+            }
         }
 
         private WebLocatorType _locatorType;

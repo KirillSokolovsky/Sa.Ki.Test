@@ -105,9 +105,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CombinedWebElementInfoViewModel.cs" />
+    <Compile Include="FrameWebSearchInfoViewModel.cs" />
     <Compile Include="WebElementWithReferenceViewModel.cs" />
     <Compile Include="WebElementInfoViewModel.cs" />
     <Compile Include="WebElementsViewModelsHelper.cs" />
+    <Compile Include="FrameWebLocatorInfoViewModel.cs" />
     <Compile Include="WebLocatorInfoViewModel.cs" />
     <Compile Include="WebSearchInfoModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

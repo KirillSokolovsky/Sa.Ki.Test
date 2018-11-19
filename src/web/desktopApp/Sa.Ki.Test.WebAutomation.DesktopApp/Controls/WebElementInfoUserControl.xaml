@@ -7,6 +7,8 @@
              xmlns:dacn="clr-namespace:Sa.Ki.Test.DesktopApp.Controls;assembly=Sa.Ki.Test.DesktopApp"
              xmlns:dacnv="clr-namespace:Sa.Ki.Test.DesktopApp.Converters;assembly=Sa.Ki.Test.DesktopApp"
              xmlns:cnv="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Converters"
+             xmlns:mdls="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Models;assembly=Sa.Ki.Test.WebAutomation.DesktopApp.Models"
+             xmlns:wi="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Controls.WebElementInfoUserControlCommon"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -17,8 +19,10 @@
         <dacnv:InvertBoolConverter x:Key="NotCnv"></dacnv:InvertBoolConverter>
         <dacnv:StringNullOrEmptyConverter x:Key="IsNullOrEmptyCnv"></dacnv:StringNullOrEmptyConverter>
         <dacnv:NullableCollectionLength x:Key="NullableCollectionLengthCnv"></dacnv:NullableCollectionLength>
+        
+        <cnv:WebElementToTreePathConverter x:Key="BreadCnv"></cnv:WebElementToTreePathConverter>
 
-        <cnv:WebElementToBreadStringConverter x:Key="BreadCnv"></cnv:WebElementToBreadStringConverter>
+        <wi:WebElementInfoDetailsTemplateSelector x:Key="TmplSelector"></wi:WebElementInfoDetailsTemplateSelector>
 
         <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
             <Setter Property="Width" Value="90"></Setter>
@@ -32,10 +36,10 @@
             <Setter Property="MinWidth" Value="150"></Setter>
             <Setter Property="Padding" Value="5"></Setter>
             <Setter Property="VerticalAlignment" Value="Center"></Setter>
-            <Setter Property="IsReadOnly" Value="{Binding IsReadOnly}"></Setter>
+            <Setter Property="IsReadOnly" Value="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebElementInfoUserControl}}}"></Setter>
 
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsReadOnly}" Value="True">
+                <DataTrigger Binding="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebElementInfoUserControl}}}" Value="True">
                     <Setter Property="Background" Value="Transparent"></Setter>
                     <Setter Property="BorderThickness" Value="1 0 0 0"></Setter>
                 </DataTrigger>
@@ -46,150 +50,221 @@
             <Setter Property="Margin" Value="5 5 0 0"></Setter>
         </Style>
 
-    </UserControl.Resources>
+        <DataTemplate x:Key="BaseInfo">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
 
-    <Grid Name="LayoutGrid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
+                <GroupBox Grid.Row="0" Header="Tree path:" Margin="5" Background="Transparent">
+                    <TextBlock Text="{Binding Converter={StaticResource BreadCnv}}"></TextBlock>
+                </GroupBox>
 
-        <Grid Grid.Row="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
-
-            <GroupBox Grid.Row="0" Header="Tree path:" Margin="5" Background="Transparent">
-                <TextBlock Text="{Binding WebElement, Converter={StaticResource BreadCnv}}"></TextBlock>
-            </GroupBox>
-
-            <WrapPanel Grid.Row="1">
-                <Label>Element Type:</Label>
-                <TextBox Text="{Binding WebElement.ElementType}" 
+                <WrapPanel Grid.Row="1" Style="{StaticResource {x:Type WrapPanel}}">
+                    <Label>Element Type:</Label>
+                    <TextBox Text="{Binding ElementType}" 
                          IsReadOnly="True" 
                          BorderThickness="1 0 0 0" 
                          Background="Transparent"></TextBox>
-            </WrapPanel>
+                </WrapPanel>
 
-            <WrapPanel Grid.Row="2">
-                <Label>Name:</Label>
-                <TextBox Text="{Binding WebElement.Name, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-            </WrapPanel>
+                <WrapPanel Grid.Row="2" Style="{StaticResource {x:Type WrapPanel}}">
+                    <Label>Name:</Label>
+                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                </WrapPanel>
 
-            <WrapPanel Grid.Row="3">
-                <Label>Description:</Label>
-                <TextBox Text="{Binding WebElement.Description, UpdateSourceTrigger=PropertyChanged}"
+                <WrapPanel Grid.Row="3" Style="{StaticResource {x:Type WrapPanel}}">
+                    <Label>Description:</Label>
+                    <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
                      AcceptsReturn="True" AcceptsTab="True">
-                </TextBox>
-            </WrapPanel>
-        </Grid>
+                    </TextBox>
+                </WrapPanel>
+            </Grid>
+        </DataTemplate>
 
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
+        <DataTemplate x:Key="InnerKeyAndIsKey">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
 
-            <WrapPanel Grid.Row="0">
-                <Label>Inner Key:</Label>
-                <TextBox Text="{Binding WebElement.InnerKey}">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
 
-                            <Setter Property="IsReadOnly" Value="True"></Setter>
-                            <Setter Property="Background" Value="Transparent"></Setter>
-                            <Setter Property="BorderThickness" Value="1 0 0 0"></Setter>
+                <WrapPanel Grid.Row="0">
+                    <Label>Inner Key:</Label>
+                    <TextBox Text="{Binding InnerKey}">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
 
+                                <Setter Property="IsReadOnly" Value="True"></Setter>
+                                <Setter Property="Background" Value="Transparent"></Setter>
+                                <Setter Property="BorderThickness" Value="1 0 0 0"></Setter>
+
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+
+                    <WrapPanel.Style>
+                        <Style TargetType="WrapPanel" BasedOn="{StaticResource {x:Type WrapPanel}}">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding InnerKey}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
-                    </TextBox.Style>
-                </TextBox>
+                    </WrapPanel.Style>
 
-                <WrapPanel.Style>
-                    <Style TargetType="WrapPanel" BasedOn="{StaticResource {x:Type WrapPanel}}">
-                        <Setter Property="Visibility" Value="Visible"></Setter>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding WebElement.InnerKey}" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Collapsed"></Setter>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </WrapPanel.Style>
+                </WrapPanel>
 
-            </WrapPanel>
-
-            <WrapPanel Grid.Row="1">
-                <Label>Is Key?</Label>
-                <CheckBox IsChecked="{Binding WebElement.IsKey, UpdateSourceTrigger=PropertyChanged}"
+                <WrapPanel Grid.Row="1" Style="{StaticResource {x:Type WrapPanel}}">
+                    <Label>Is Key?</Label>
+                    <CheckBox IsChecked="{Binding IsKey, UpdateSourceTrigger=PropertyChanged}"
                       Padding="5"
                       VerticalAlignment="Center"
-                      IsEnabled="{Binding IsReadOnly, Converter={StaticResource NotCnv}}">
-                </CheckBox>
-            </WrapPanel>
+                      IsEnabled="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebElementInfoUserControl}}, Converter={StaticResource NotCnv}}">
+                    </CheckBox>
+                </WrapPanel>
+            </Grid>
+        </DataTemplate>
 
-            <Expander Grid.Row="2" Margin="5" Background="Transparent"
+        <DataTemplate x:Key="TagsAndLocator">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Expander Grid.Row="0" Margin="5" Background="Transparent"
                   MaxHeight="300"
                   ExpandDirection="Down">
 
-                <Expander.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Tags ("></TextBlock>
-                        <TextBlock Text="{Binding WebElement.Tags, Converter={StaticResource NullableCollectionLengthCnv}}"></TextBlock>
-                        <TextBlock Text=")"></TextBlock>
-                    </StackPanel>
-                </Expander.Header>
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Tags ("></TextBlock>
+                            <TextBlock Text="{Binding Tags, Converter={StaticResource NullableCollectionLengthCnv}}"></TextBlock>
+                            <TextBlock Text=")"></TextBlock>
+                        </StackPanel>
+                    </Expander.Header>
 
-                <dacn:ListOfStringsUserControl StringItems="{Binding WebElement.Tags}"
-                                           IsReadOnly="{Binding IsReadOnly}"
+                    <dacn:ListOfStringsUserControl StringItems="{Binding Tags, Mode=TwoWay}"
+                                           IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebElementInfoUserControl}}}"
                                            ItemName="Tag">
 
-                </dacn:ListOfStringsUserControl>
+                    </dacn:ListOfStringsUserControl>
 
-                <Expander.Style>
-                    <Style TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
+                    <Expander.Style>
+                        <Style TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
 
-                        <Setter Property="BorderThickness" Value="0"></Setter>
+                            <Setter Property="BorderThickness" Value="0"></Setter>
 
-                        <Style.Triggers>
-                            <Trigger Property="IsExpanded" Value="True">
-                                <Setter Property="BorderThickness" Value="0 0 1 1"></Setter>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Expander.Style>
+                            <Style.Triggers>
+                                <Trigger Property="IsExpanded" Value="True">
+                                    <Setter Property="BorderThickness" Value="0 0 1 1"></Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Expander.Style>
 
-            </Expander>
+                </Expander>
 
-            <GroupBox Grid.Row="3" Header="Locator:" Margin="5" Background="Transparent">
-                <local:WebLocatorInfoUserControl WebLocator="{Binding WebElement.Locator}"
-                                             IsReadOnly="{Binding IsReadOnly}">
+                <GroupBox Grid.Row="1" Header="Locator:" Margin="5" Background="Transparent">
+                    <local:WebLocatorInfoUserControl WebLocator="{Binding Locator}"
+                                             IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebElementInfoUserControl}}}">
 
-                </local:WebLocatorInfoUserControl>
-            </GroupBox>
+                    </local:WebLocatorInfoUserControl>
+                </GroupBox>
 
-            <GroupBox Grid.Row="4" Header="Locators path:" Margin="5" Background="Transparent">
-                <local:WebElementLocatorsPathUserControl WebElement="{Binding WebElement}">
+                <GroupBox Grid.Row="2" Header="Locators path:" Margin="5" Background="Transparent">
+                    <local:WebElementLocatorsPathUserControl WebElement="{Binding}">
 
-                </local:WebElementLocatorsPathUserControl>
-            </GroupBox>
+                    </local:WebElementLocatorsPathUserControl>
+                </GroupBox>
 
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Visible"></Setter>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding WebElement.ElementType}" Value="Directory">
-                            <Setter Property="Visibility" Value="Collapsed"></Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
+            </Grid>
+        </DataTemplate>
 
-        </Grid>
+        <DataTemplate x:Key="ElementInfo">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
 
+                <ContentPresenter Grid.Row="0" 
+                                  Content="{Binding}" 
+                                  ContentTemplate="{StaticResource BaseInfo}">
+                </ContentPresenter>
+
+                <ContentPresenter Grid.Row="1" 
+                                  Content="{Binding}" 
+                                  ContentTemplate="{StaticResource InnerKeyAndIsKey}">
+                </ContentPresenter>
+
+                <ContentPresenter Grid.Row="2" 
+                                  Content="{Binding}" 
+                                  ContentTemplate="{StaticResource TagsAndLocator}">
+                </ContentPresenter>
+                
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ElementWithReferenceInfo" DataType="{x:Type mdls:WebElementWithReferenceViewModel}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <ContentPresenter Grid.Row="0" 
+                                  Content="{Binding}" 
+                                  ContentTemplate="{StaticResource BaseInfo}">
+                </ContentPresenter>
+
+                <ContentPresenter Grid.Row="1" 
+                                  Content="{Binding}" 
+                                  ContentTemplate="{StaticResource InnerKeyAndIsKey}">
+                </ContentPresenter>
+
+                <WrapPanel Grid.Row="2" Style="{StaticResource {x:Type WrapPanel}}">
+                    <Label>Referenced to:</Label>
+                    <TextBox Text="{Binding ReferenceBreadString}" 
+                         IsReadOnly="True" 
+                         BorderThickness="1 0 0 0" 
+                         Background="Transparent"></TextBox>
+                    <Button Content="Edit" Click="EditReferencedElementButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebElementInfoUserControl}}}" 
+                                                 Value="False">
+                                        <Setter Property="Visibility" Value="Visible"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </WrapPanel>
+
+                <ContentPresenter Grid.Row="3" 
+                                  Content="{Binding}" 
+                                  ContentTemplate="{StaticResource TagsAndLocator}">
+                </ContentPresenter>
+
+            </Grid>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <Grid Name="LayoutGrid">
+        <ContentPresenter Content="{Binding WebElement}" ContentTemplateSelector="{StaticResource TmplSelector}"></ContentPresenter>
     </Grid>
 </UserControl>

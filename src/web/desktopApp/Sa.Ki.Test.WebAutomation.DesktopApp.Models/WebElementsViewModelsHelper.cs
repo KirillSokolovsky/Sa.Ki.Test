@@ -68,19 +68,19 @@
 
                 case WebElementWithReferenceViewModel wr:
                     {
-                        switch(wr.ElementType)
+                        switch (wr.ElementType)
                         {
                             case WebElementTypes.Frame:
 
                                 var f = new FrameWebElementInfo();
-                                f.Path = wr.ReferenceBreadString;
+                                f.TreePathToInnerElement = wr.ReferenceBreadString;
                                 info = f;
 
                                 break;
                             case WebElementTypes.Reference:
 
                                 var r = new WebElementReference();
-                                r.Path = wr.ReferenceBreadString;
+                                r.TreePathToReferencedElement = wr.ReferenceBreadString;
                                 info = r;
 
                                 break;
@@ -128,9 +128,9 @@
             }
         }
 
-        public static WebElementInfoViewModel GetCopyOfBaseInformation(WebElementInfoViewModel webElementInfo)
+        public static WebElementWithReferenceViewModel GetCopyOfBaseInformation(WebElementInfoViewModel webElementInfo)
         {
-            var info = new WebElementInfoViewModel
+            var info = new WebElementWithReferenceViewModel
             {
                 Name = webElementInfo.Name,
                 Description = webElementInfo.Description,
@@ -147,6 +147,9 @@
                     LocatorValue = webElementInfo.Locator.LocatorValue
                 }
             };
+
+            if (webElementInfo is WebElementWithReferenceViewModel refs)
+                info.ReferenceBreadString = refs.ReferenceBreadString;
 
             return info;
         }
@@ -171,6 +174,9 @@
                 toRemove.ToList().ForEach(t => model.Tags.Remove(t));
                 toAdd.ToList().ForEach(t => model.Tags.Add(t));
             }
+
+            if (model is WebElementWithReferenceViewModel refModel)
+                refModel.ReferenceBreadString = (info as WebElementWithReferenceViewModel).ReferenceBreadString;
 
             model.Locator.IsRelative = info.Locator.IsRelative;
             model.Locator.LocatorType = info.Locator.LocatorType;
@@ -246,6 +252,53 @@
             }
 
             return webElementInfo;
+        }
+
+        public static List<string> GetBlockedElementTypesForElementType(string elementType)
+        {
+            switch (elementType)
+            {
+                case WebElementTypes.Reference:
+                    return new List<string> { WebElementTypes.Reference };
+
+                case WebElementTypes.Frame:
+                    return new List<string>
+                    {
+                        WebElementTypes.Reference,
+                        WebElementTypes.Frame,
+                        WebElementTypes.Element,
+                        WebElementTypes.RadioGroup,
+                        WebElementTypes.DropDown
+                    };
+                default:
+                    return null;
+            }
+        }
+
+        public static WebLocatorInfoViewModel CreateLocatorModel(WebLocatorInfo webLocatorInfo)
+        {
+            WebLocatorInfoViewModel model = null;
+            if (webLocatorInfo is FrameWebLocatorInfo fli)
+            {
+                model = new FrameWebLocatorInfoViewModel(webLocatorInfo)
+                {
+                    FrameLocatorType = fli.FrameLocatorType
+                };
+            }
+            else model = new WebLocatorInfoViewModel(webLocatorInfo);
+
+            return model;
+        }
+
+        public static WebSearchInfoModel CreateWebSearchModelFromInfo(WebSearchInfo webSearchInfo)
+        {
+            WebSearchInfoModel model = null;
+
+            if (webSearchInfo is FrameWebSearchInfo fwsi)
+                model = new FrameWebSearchInfoViewModel(fwsi);
+            else model = new WebSearchInfoModel(webSearchInfo);
+
+            return model;
         }
     }
 }
