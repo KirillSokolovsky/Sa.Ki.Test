@@ -16,9 +16,6 @@ using System.Windows.Shapes;
 
 namespace Sa.Ki.Test.WebAutomation.DesktopApp.Controls
 {
-    /// <summary>
-    /// Interaction logic for WebLocatorUserControl.xaml
-    /// </summary>
     public partial class WebLocatorInfoUserControl : UserControl
     {
         public WebLocatorInfoViewModel WebLocator
@@ -37,7 +34,7 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Controls
         }
         public static readonly DependencyProperty IsReadOnlyProperty =
             DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(WebLocatorInfoUserControl), new PropertyMetadata(false));
-               
+
         public WebLocatorInfoUserControl()
         {
             InitializeComponent();

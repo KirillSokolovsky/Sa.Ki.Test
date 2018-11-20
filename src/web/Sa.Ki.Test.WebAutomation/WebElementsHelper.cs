@@ -81,6 +81,11 @@
                             searchInfo.LocatorValue = MergeCss(parentLocator.LocatorValue, searchInfo.LocatorValue);
                         }
                     }
+                    else if(parentLocator.LocatorType == WebLocatorType.XPath
+                        && parentLocator.LocatorValue == ".")
+                    {
+
+                    }
                     else
                     {
                         searchInfo.ParentSearch = BuildWebSearch(parent);

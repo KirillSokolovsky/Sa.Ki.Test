@@ -23,9 +23,24 @@
 
         protected override void ExecuteCommand()
         {
+            string referenceTreePath = null;
+            if (_elementType == WebElementTypes.Reference)
+            {
+                var blockedTypesToPick = WebElementsViewModelsHelper.GetBlockedElementTypesForElementType(_elementType);
+
+                var picker = new WebElementPickerDialog(_webElementsTreeUserControl.WebElements.ToList(),
+                    null,
+                    null,
+                    blockedTypesToPick);
+
+                if (picker.ShowDialog() != true) return;
+                referenceTreePath = picker.SelectedWebElementTreePath;
+            }
+
             var validator = WebElementCommandsHelper.GetCreateUpdateWebElementValidator(_webElementsTreeUserControl, null,
                 _elementType != WebElementTypes.Directory);
 
+            //TODO: add ctor override to accept WebElementInfoViewModel with default data
             var dialog = new WebElementCreateEditDialog(validator, _elementType,
                 _elementType);
             if (dialog.ShowDialog() != true) return;
@@ -69,17 +84,27 @@
             }
             else if (_elementType == WebElementTypes.Reference || _elementType == WebElementTypes.Frame)
             {
-                var blockedTypesToPick = WebElementsViewModelsHelper.GetBlockedElementTypesForElementType(_elementType);
+                if (_elementType == WebElementTypes.Frame)
+                {
+                    var blockedTypesToPick = WebElementsViewModelsHelper.GetBlockedElementTypesForElementType(_elementType);
 
-                var picker = new WebElementPickerDialog(_webElementsTreeUserControl.WebElements.ToList(),
-                    null,
-                    null,
-                    blockedTypesToPick);
+                    var picker = new WebElementPickerDialog(_webElementsTreeUserControl.WebElements.ToList(),
+                        null,
+                        null,
+                        blockedTypesToPick);
 
-                if (picker.ShowDialog() != true) return;
+                    if (picker.ShowDialog() != true) return;
+                    referenceTreePath = picker.SelectedWebElementTreePath;
+                }
 
-                (createdWebElement as WebElementWithReferenceViewModel).ReferenceBreadString 
-                    = picker.SelectedWebElementTreePath;
+                (createdWebElement as WebElementWithReferenceViewModel).ReferenceBreadString
+                    = referenceTreePath;
+
+                var referencedElement = (WebElementInfoViewModel)_webElementsTreeUserControl.WebElements.FindNodeByTreePath(referenceTreePath);
+
+                var referemcedElementInfo = WebElementsViewModelsHelper.CreateInfoFromModel(referencedElement);
+                var referencedElementModel = WebElementsViewModelsHelper.CreateModelFromInfo(referemcedElementInfo);
+                (createdWebElement as WebElementWithReferenceViewModel).ReferencedWebElement = referencedElementModel;
             }
 
             if (Selected == null)

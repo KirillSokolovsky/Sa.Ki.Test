@@ -65,7 +65,7 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
             IsEditMode = true;
             Title = $"Edit WebElement: {webElement.Name}";
             SourceWebElement = webElement;
-            WebElement = WebElementsViewModelsHelper.GetCopyOfBaseInformation(webElement);
+            WebElement = WebElementsViewModelsHelper.CreateModelCopyWithBaseInfo(webElement);
             WebElement.Parent = webElement.Parent;
 
             InitializeComponent();
@@ -73,8 +73,8 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
             DataContext = this;
         }
 
-        public WebElementCreateEditDialog(Func<WebElementInfoViewModel, string> validate, string elementType, 
-            string prefilledName = null, 
+        public WebElementCreateEditDialog(Func<WebElementInfoViewModel, string> validate, string elementType,
+            string prefilledName = null,
             string prefilledDescription = null,
             string prefilledInnerKey = null,
             bool prefilledLocatorIsRelative = false)
@@ -86,14 +86,15 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
                 Title = $"Specify new WebElement with role {prefilledInnerKey}";
 
             IsEditMode = false;
-            WebElement = new WebElementWithReferenceViewModel
-            {
-                ElementType = elementType,
-                Description = prefilledDescription,
-                InnerKey = prefilledInnerKey,
-                Name = prefilledName,
-            };
-            WebElement.Locator.IsRelative = prefilledLocatorIsRelative;
+            WebElement = WebElementsViewModelsHelper.CreateModelFromWebElementType(elementType);
+
+            WebElement.ElementType = elementType;
+            WebElement.Description = prefilledDescription;
+            WebElement.InnerKey = prefilledInnerKey;
+            WebElement.Name = prefilledName;
+
+            if (elementType != WebElementTypes.Directory)
+                WebElement.Locator.IsRelative = prefilledLocatorIsRelative;
 
             InitializeComponent();
 

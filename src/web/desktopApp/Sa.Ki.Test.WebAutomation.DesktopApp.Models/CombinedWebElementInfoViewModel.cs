@@ -26,6 +26,9 @@
                     Elements.Add(model);
                 }
             }
+
+            if (ElementType == WebElementTypes.Directory)
+                Locator = null;
         }
 
         private ObservableCollection<WebElementInfoViewModel> _elements;

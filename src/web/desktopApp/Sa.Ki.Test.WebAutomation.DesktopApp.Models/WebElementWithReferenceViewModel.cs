@@ -14,17 +14,21 @@
             : base(frameWebElement)
         {
             ReferenceBreadString = frameWebElement.TreePathToInnerElement;
+            ReferencedWebElement = WebElementsViewModelsHelper.CreateModelFromInfo(frameWebElement.InnerElement);
         }
         public WebElementWithReferenceViewModel(WebElementReference webElementReference)
             : base(webElementReference)
         {
             ReferenceBreadString = webElementReference.TreePathToReferencedElement;
+            ReferencedWebElement = WebElementsViewModelsHelper.CreateModelFromInfo(webElementReference.ReferencedElement);
         }
 
         public WebElementWithReferenceViewModel(string elementType)
             : base(null)
         {
             ElementType = elementType;
+            if (ElementType == WebElementTypes.Frame)
+                Locator = new FrameWebLocatorInfoViewModel();
         }
 
         public WebElementWithReferenceViewModel()

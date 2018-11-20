@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Controls"
              xmlns:mdls="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Models;assembly=Sa.Ki.Test.WebAutomation.DesktopApp.Models"
              xmlns:dacnv="clr-namespace:Sa.Ki.Test.DesktopApp.Converters;assembly=Sa.Ki.Test.DesktopApp"
+             xmlns:cnv="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -13,6 +14,8 @@
 
         <dacnv:DebugConverter x:Key="DbgCnv"></dacnv:DebugConverter>
         <dacnv:InvertBoolConverter x:Key="NotCnv"></dacnv:InvertBoolConverter>
+        <cnv:NotFrameLocatorIsLocatorConverter x:Key="NotLocatorCnv"></cnv:NotFrameLocatorIsLocatorConverter>
+        <cnv:IsFrameLocatorConverter x:Key="IsFrameCnv"></cnv:IsFrameLocatorConverter>
 
         <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
             <Setter Property="Width" Value="90"></Setter>
@@ -28,7 +31,7 @@
             <Setter Property="VerticalAlignment" Value="Center"></Setter>
 
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsReadOnly}" Value="True">
+                <DataTrigger Binding="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebLocatorInfoUserControl}}}" Value="True">
                     <Setter Property="Background" Value="Transparent"></Setter>
                     <Setter Property="BorderThickness" Value="1 0 0 0"></Setter>
                 </DataTrigger>
@@ -44,40 +47,106 @@
         <Style TargetType="WrapPanel">
             <Setter Property="Margin" Value="5 5 0 0"></Setter>
         </Style>
+
+        <Style TargetType="WrapPanel" x:Key="WP" BasedOn="{StaticResource {x:Type WrapPanel}}">
+            <Setter Property="Visibility" Value="Visible"></Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding FrameLocatorType, Converter={StaticResource NotLocatorCnv}}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+
         
     </UserControl.Resources>
     
     <Grid Name="LayoutRoot">
-        
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-        </Grid.RowDefinitions>
 
-        <WrapPanel Grid.Row="0">
-            <Label>Locator type:</Label>
-            <ComboBox ItemsSource="{Binding WebLocator.LocatorTypes}"
-                      SelectedItem="{Binding WebLocator.LocatorType}"
-                      IsEnabled="{Binding IsReadOnly, Converter={StaticResource NotCnv}}">
-            </ComboBox>
-        </WrapPanel>
+        <ContentPresenter Content="{Binding Path=WebLocator}">
+            <ContentPresenter.Resources>
+                <DataTemplate DataType="{x:Type mdls:WebLocatorInfoViewModel}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
 
-        <WrapPanel Grid.Row="1">
-            <Label>Locator value:</Label>
-            <TextBox Text="{Binding WebLocator.LocatorValue, UpdateSourceTrigger=PropertyChanged}"
-                     IsReadOnly="{Binding IsReadOnly}">
-            </TextBox>
-        </WrapPanel>
+                        <WrapPanel Grid.Row="0" Style="{StaticResource {x:Type WrapPanel}}">
+                            <Label Style="{StaticResource {x:Type Label}}">Type:</Label>
+                            <ComboBox ItemsSource="{Binding LocatorTypes}"
+                                      SelectedItem="{Binding LocatorType}"
+                                      Style="{StaticResource {x:Type ComboBox}}"
+                                      IsEnabled="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebLocatorInfoUserControl}}, Converter={StaticResource NotCnv}}">
+                            </ComboBox>
+                        </WrapPanel>
 
-        <WrapPanel Grid.Row="2">
-            <Label>Is relative?</Label>
-            <CheckBox IsChecked="{Binding WebLocator.IsRelative, UpdateSourceTrigger=PropertyChanged}"
-                      IsEnabled="{Binding IsReadOnly, Converter={StaticResource NotCnv}}"
-                      Padding="5"
-                      VerticalAlignment="Center">
-            </CheckBox>
-        </WrapPanel>
+                        <WrapPanel Grid.Row="1" Style="{StaticResource {x:Type WrapPanel}}">
+                            <Label Style="{StaticResource {x:Type Label}}">Value:</Label>
+                            <TextBox Text="{Binding LocatorValue, UpdateSourceTrigger=PropertyChanged}"
+                                     IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebLocatorInfoUserControl}}}">
+                            </TextBox>
+                        </WrapPanel>
+
+                        <WrapPanel Grid.Row="2" Style="{StaticResource {x:Type WrapPanel}}">
+                            <Label Style="{StaticResource {x:Type Label}}">Is relative?</Label>
+                            <CheckBox IsChecked="{Binding IsRelative, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEnabled="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebLocatorInfoUserControl}}, Converter={StaticResource NotCnv}}"
+                                      Padding="5"
+                                      VerticalAlignment="Center">
+                            </CheckBox>
+                        </WrapPanel>
+                    </Grid>
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type mdls:FrameWebLocatorInfoViewModel}">
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <WrapPanel Grid.Row="0" Style="{StaticResource {x:Type WrapPanel}}">
+                            <Label Style="{StaticResource {x:Type Label}}">Frame type:</Label>
+                            <ComboBox ItemsSource="{Binding FrameLocatorTypes}"
+                                      SelectedItem="{Binding FrameLocatorType}"
+                                      Style="{StaticResource {x:Type ComboBox}}"
+                                      IsEnabled="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebLocatorInfoUserControl}}, Converter={StaticResource NotCnv}}">
+                            </ComboBox>
+                        </WrapPanel>
+
+                        <WrapPanel Grid.Row="1" Style="{StaticResource WP}">
+                            <Label Style="{StaticResource {x:Type Label}}">Type:</Label>
+                            <ComboBox ItemsSource="{Binding LocatorTypes}"
+                                      SelectedItem="{Binding LocatorType}"
+                                      Style="{StaticResource {x:Type ComboBox}}"
+                                      IsEnabled="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebLocatorInfoUserControl}}, Converter={StaticResource NotCnv}}">
+                            </ComboBox>
+                        </WrapPanel>
+
+                        <WrapPanel Grid.Row="2" Style="{StaticResource {x:Type WrapPanel}}">
+                            <Label Style="{StaticResource {x:Type Label}}">Value:</Label>
+                            <TextBox Text="{Binding LocatorValue, UpdateSourceTrigger=PropertyChanged}"
+                                     IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebLocatorInfoUserControl}}}">
+                            </TextBox>
+                        </WrapPanel>
+
+                        <WrapPanel Grid.Row="3" Style="{StaticResource WP}">
+                            <Label Style="{StaticResource {x:Type Label}}">Is relative?</Label>
+                            <CheckBox IsChecked="{Binding IsRelative, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEnabled="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebLocatorInfoUserControl}}, Converter={StaticResource NotCnv}}"
+                                      Padding="5"
+                                      VerticalAlignment="Center">
+                            </CheckBox>
+                        </WrapPanel>
+                    </Grid>
+                </DataTemplate>
+            </ContentPresenter.Resources>
+        </ContentPresenter>
         
     </Grid>
 </UserControl>

@@ -7,6 +7,7 @@
              xmlns:cnv="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Converters"
              xmlns:dacnv="clr-namespace:Sa.Ki.Test.DesktopApp.Converters;assembly=Sa.Ki.Test.DesktopApp"
              xmlns:mdls="clr-namespace:Sa.Ki.Test.WebAutomation.DesktopApp.Models;assembly=Sa.Ki.Test.WebAutomation.DesktopApp.Models"
+             xmlns:wa="clr-namespace:Sa.Ki.Test.WebAutomation;assembly=Sa.Ki.Test.WebAutomation"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -41,7 +42,18 @@
                     <StackPanel>
                         <WrapPanel>
                             <TextBlock Text="Frame > "></TextBlock>
-                            <TextBlock Text="{Binding FrameLocatorType}"></TextBlock>
+                            <TextBlock Text="{Binding FrameLocatorType}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                        <Setter Property="Visibility" Value="Visible"></Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding FrameLocatorType}" Value="Locator">
+                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                             <TextBlock Text="{Binding LocatorType}"></TextBlock>
                         </WrapPanel>
                         <TextBox Text="{Binding LocatorValue}" BorderThickness="0" Margin="10 0 0 0"></TextBox>

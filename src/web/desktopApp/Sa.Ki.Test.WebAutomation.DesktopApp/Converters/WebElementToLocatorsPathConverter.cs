@@ -18,7 +18,20 @@
             if (!(values[1] is WebElementInfoViewModel webElement))
                 return null;
 
-            var ws = webElement.GetWebSearch();
+            WebSearchInfo ws = null;
+
+            try
+            {
+                ws = webElement.GetWebSearch();
+            }
+            catch(Exception ex)
+            {
+                ws = new WebSearchInfo
+                {
+                    LocatorValue = $"Error: {ex.Message}"
+                };
+            }
+
             var wsModel = WebElementsViewModelsHelper.CreateWebSearchModelFromInfo(ws);
 
             var list = new List<WebSearchInfoModel>();

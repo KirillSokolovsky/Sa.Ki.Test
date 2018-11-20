@@ -119,6 +119,7 @@
                 case WebElementTypes.RadioGroup:
                     return new CombinedWebElementInfoViewModel();
                 case WebElementTypes.Frame:
+                    return new WebElementWithReferenceViewModel(WebElementTypes.Frame);
                 case WebElementTypes.Reference:
                     return new WebElementWithReferenceViewModel(WebElementTypes.Reference);
                 case WebElementTypes.Element:
@@ -126,61 +127,6 @@
                 default:
                     throw new Exception($"Unknown WebElementTypes to create model: {elementType}");
             }
-        }
-
-        public static WebElementWithReferenceViewModel GetCopyOfBaseInformation(WebElementInfoViewModel webElementInfo)
-        {
-            var info = new WebElementWithReferenceViewModel
-            {
-                Name = webElementInfo.Name,
-                Description = webElementInfo.Description,
-                ElementType = webElementInfo.ElementType,
-                InnerKey = webElementInfo.InnerKey,
-                IsKey = webElementInfo.IsKey,
-                Tags = webElementInfo.Tags == null
-                    ? null
-                    : new ObservableCollection<string>(webElementInfo.Tags),
-                Locator = new WebLocatorInfoViewModel
-                {
-                    IsRelative = webElementInfo.Locator.IsRelative,
-                    LocatorType = webElementInfo.Locator.LocatorType,
-                    LocatorValue = webElementInfo.Locator.LocatorValue
-                }
-            };
-
-            if (webElementInfo is WebElementWithReferenceViewModel refs)
-                info.ReferenceBreadString = refs.ReferenceBreadString;
-
-            return info;
-        }
-        public static void FillModelWithBaseInfo(WebElementInfoViewModel model, WebElementInfoViewModel info)
-        {
-            model.Name = info.Name;
-            model.Description = info.Description;
-            model.InnerKey = info.InnerKey;
-            model.ElementType = info.ElementType;
-            model.IsKey = info.IsKey;
-
-            if (info.Tags == null)
-                model.Tags = null;
-            else
-            {
-                if (model.Tags == null)
-                    model.Tags = new ObservableCollection<string>();
-
-                var toRemove = model.Tags.Where(mt => !info.Tags.Contains(mt));
-                var toAdd = info.Tags.Where(it => !model.Tags.Contains(it));
-
-                toRemove.ToList().ForEach(t => model.Tags.Remove(t));
-                toAdd.ToList().ForEach(t => model.Tags.Add(t));
-            }
-
-            if (model is WebElementWithReferenceViewModel refModel)
-                refModel.ReferenceBreadString = (info as WebElementWithReferenceViewModel).ReferenceBreadString;
-
-            model.Locator.IsRelative = info.Locator.IsRelative;
-            model.Locator.LocatorType = info.Locator.LocatorType;
-            model.Locator.LocatorValue = info.Locator.LocatorValue;
         }
 
         public static void Filter(this ObservableCollection<CombinedWebElementInfoViewModel> contexts, Func<WebElementInfoViewModel, bool> filter, ref int resultsCount)
@@ -299,6 +245,91 @@
             else model = new WebSearchInfoModel(webSearchInfo);
 
             return model;
+        }
+
+        public static WebElementInfoViewModel CreateModelCopyWithBaseInfo(WebElementInfoViewModel model)
+        {
+            WebElementInfoViewModel copy = null;
+
+            if (model is WebElementWithReferenceViewModel referenced)
+            {
+                copy = new WebElementWithReferenceViewModel
+                {
+                    ReferenceBreadString = referenced.ReferenceBreadString
+                };
+            }
+            else
+            {
+                copy = new WebElementInfoViewModel();
+            }
+
+            copy.ElementType = model.ElementType;
+            copy.Name = model.Name;
+            copy.Description = model.Description;
+            copy.InnerKey = model.InnerKey;
+            copy.IsKey = model.IsKey;
+
+            if (model.Tags != null)
+                copy.Tags = new ObservableCollection<string>(model.Tags.ToList());
+
+            if (model.ElementType != WebElementTypes.Directory)
+            {
+                if (model.ElementType == WebElementTypes.Frame)
+                {
+                    copy.Locator = new FrameWebLocatorInfoViewModel
+                    {
+                        FrameLocatorType = (model.Locator as FrameWebLocatorInfoViewModel).FrameLocatorType
+                    };
+                }
+                else copy.Locator = new WebLocatorInfoViewModel();
+
+                copy.Locator.LocatorType = model.Locator.LocatorType;
+                copy.Locator.LocatorValue = model.Locator.LocatorValue;
+                copy.Locator.IsRelative = model.Locator.IsRelative;
+            }
+
+            return copy;
+        }
+
+        public static void FillModelWithBaseInfo(WebElementInfoViewModel model, WebElementInfoViewModel baseInfo)
+        {
+            model.Name = baseInfo.Name;
+            model.Description = baseInfo.Description;
+            model.ElementType = baseInfo.ElementType;
+            model.InnerKey = baseInfo.InnerKey;
+            model.IsKey = baseInfo.IsKey;
+
+            if (baseInfo.Tags == null)
+                model.Tags = null;
+            else
+            {
+                if (model.Tags == null)
+                    model.Tags = new ObservableCollection<string>();
+
+                var toRemove = model.Tags.Where(mt => !baseInfo.Tags.Contains(mt));
+                var toAdd = baseInfo.Tags.Where(it => !model.Tags.Contains(it));
+
+                toRemove.ToList().ForEach(t => model.Tags.Remove(t));
+                toAdd.ToList().ForEach(t => model.Tags.Add(t));
+            }
+
+            if (model is WebElementWithReferenceViewModel referenced)
+            {
+                referenced.ReferenceBreadString = (baseInfo as WebElementWithReferenceViewModel).ReferenceBreadString;
+            }
+
+            if (model.ElementType == WebElementTypes.Frame)
+            {
+                (model.Locator as FrameWebLocatorInfoViewModel).FrameLocatorType
+                    = (baseInfo.Locator as FrameWebLocatorInfoViewModel).FrameLocatorType;
+            }
+
+            if (model.ElementType != WebElementTypes.Directory)
+            {
+                model.Locator.LocatorType = baseInfo.Locator.LocatorType;
+                model.Locator.LocatorValue = baseInfo.Locator.LocatorValue;
+                model.Locator.IsRelative = baseInfo.Locator.IsRelative;
+            }
         }
     }
 }
