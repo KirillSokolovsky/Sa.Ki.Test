@@ -23,95 +23,107 @@
 
         protected override void ExecuteCommand()
         {
-            string referenceTreePath = null;
+            WebElementInfoViewModel createdElement = null;
             if (_elementType == WebElementTypes.Reference)
             {
-                var blockedTypesToPick = WebElementsViewModelsHelper.GetBlockedElementTypesForElementType(_elementType);
-
-                var picker = new WebElementPickerDialog(_webElementsTreeUserControl.WebElements.ToList(),
-                    null,
-                    null,
-                    blockedTypesToPick);
-
-                if (picker.ShowDialog() != true) return;
-                referenceTreePath = picker.SelectedWebElementTreePath;
+                createdElement = CreateReference();
             }
-
-            var validator = WebElementCommandsHelper.GetCreateUpdateWebElementValidator(_webElementsTreeUserControl, null,
-                _elementType != WebElementTypes.Directory);
-
-            //TODO: add ctor override to accept WebElementInfoViewModel with default data
-            var dialog = new WebElementCreateEditDialog(validator, _elementType,
-                _elementType);
-            if (dialog.ShowDialog() != true) return;
-
-            var createdWebElement = WebElementsViewModelsHelper.CreateModelFromWebElementType(_elementType);
-            WebElementsViewModelsHelper.FillModelWithBaseInfo(
-                createdWebElement,
-                dialog.WebElement);
-
-            if (_elementType == WebElementTypes.RadioGroup || _elementType == WebElementTypes.DropDown)
+            else
             {
-                var combined = createdWebElement as CombinedWebElementInfoViewModel;
-                var names = new List<string>();
+                createdElement = CreateWebElementInfo();
 
-                if (_elementType == WebElementTypes.DropDown)
+                if (_elementType == WebElementTypes.DropDown
+                    || _elementType == WebElementTypes.RadioGroup)
                 {
-                    dialog = new WebElementCreateEditDialog(null, WebElementTypes.Element,
-                        $"{createdWebElement.Name} Input",
-                        $"Input for {createdWebElement.Name}",
-                        "Input", true);
-                    if (dialog.ShowDialog() != true) return;
-                    var input = dialog.WebElement;
-                    combined.Elements.Add(input);
-                    input.Parent = combined;
-                    names.Add(input.Name);
+                    var combinedCreatedElement = createdElement as CombinedWebElementInfoViewModel;
+
+                    if (combinedCreatedElement.Elements == null)
+                        combinedCreatedElement.Elements = new ObservableCollection<WebElementInfoViewModel>();
+
+                    if (_elementType == WebElementTypes.DropDown)
+                    {
+                        var inputTemplate = new WebElementInfoViewModel
+                        {
+                            Name = $"{createdElement.Name} Input",
+                            Description = $"Input for {createdElement.Name}",
+                            InnerKey = DropDownElementInfo.Keys.Input,
+                            ElementType = WebElementTypes.Element,
+                            IsKey = true,
+                            Locator = new WebLocatorInfoViewModel
+                            {
+                                IsRelative = true,
+                                LocatorType = WebLocatorType.XPath,
+                                LocatorValue = ".//"
+                            }
+                        };
+
+                        var inputElement = CreateWebElementInfo(
+                            combinedCreatedElement,
+                            inputTemplate);
+
+                        inputElement.Parent = combinedCreatedElement;
+                        combinedCreatedElement.Elements.Add(inputElement);
+                    }
+
+                    var optionTemplate = new WebElementInfoViewModel
+                    {
+                        Name = $"{createdElement.Name} Option",
+                        Description = $"Option for {createdElement.Name}",
+                        InnerKey = _elementType == WebElementTypes.DropDown
+                            ? DropDownElementInfo.Keys.Option
+                            : RadioGroupElementInfo.Keys.Option,
+                        ElementType = WebElementTypes.Element,
+                        IsKey = true,
+                        Locator = new WebLocatorInfoViewModel
+                        {
+                            IsRelative = true,
+                            LocatorType = WebLocatorType.XPath,
+                            LocatorValue = ".//"
+                        }
+                    };
+
+                    var optionElement = CreateWebElementInfo(
+                        combinedCreatedElement,
+                        optionTemplate);
+
+                    optionElement.Parent = combinedCreatedElement;
+                    combinedCreatedElement.Elements.Add(optionElement);
                 }
 
-                validator = (el) => names.Contains(el.Name)
-                    ? $"WebElement with name {el.Name} already exists on the level"
-                    : null;
-
-                dialog = new WebElementCreateEditDialog(validator, WebElementTypes.Element,
-                    $"{createdWebElement.Name} Option",
-                    $"One Option in {createdWebElement.Name}",
-                    "Option", true);
-
-                if (dialog.ShowDialog() != true) return;
-                var option = dialog.WebElement;
-                combined.Elements.Add(option);
-                option.Parent = combined;
-            }
-            else if (_elementType == WebElementTypes.Reference || _elementType == WebElementTypes.Frame)
-            {
                 if (_elementType == WebElementTypes.Frame)
                 {
-                    var blockedTypesToPick = WebElementsViewModelsHelper.GetBlockedElementTypesForElementType(_elementType);
+                    var frameElement = createdElement as WebElementWithReferenceViewModel;
+                    var referenceTreePath = frameElement.ReferenceBreadString;
+                    if (referenceTreePath == null)
+                    {
+                        var blockedTypesToPick = WebElementsViewModelsHelper.GetBlockedElementTypesForElementType(_elementType);
 
-                    var picker = new WebElementPickerDialog(_webElementsTreeUserControl.WebElements.ToList(),
-                        null,
-                        null,
-                        blockedTypesToPick);
+                        var picker = new WebElementPickerDialog(_webElementsTreeUserControl.WebElements.ToList(),
+                            null,
+                            null,
+                            blockedTypesToPick);
 
-                    if (picker.ShowDialog() != true) return;
-                    referenceTreePath = picker.SelectedWebElementTreePath;
+
+                        if (picker.ShowDialog() != true) return;
+                        referenceTreePath = picker.SelectedWebElementTreePath;
+                    }
+
+                    var referencedElement = (WebElementInfoViewModel)_webElementsTreeUserControl.WebElements.FindNodeByTreePath(referenceTreePath);
+
+                    var copy = WebElementsViewModelsHelper.CreateFullModelCopy(referencedElement);
+                    copy.Parent = frameElement;
+                    if (frameElement.Elements == null)
+                        frameElement.Elements = new ObservableCollection<WebElementInfoViewModel>();
+                    frameElement.Elements.Add(copy);
                 }
-
-                (createdWebElement as WebElementWithReferenceViewModel).ReferenceBreadString
-                    = referenceTreePath;
-
-                var referencedElement = (WebElementInfoViewModel)_webElementsTreeUserControl.WebElements.FindNodeByTreePath(referenceTreePath);
-
-                var referemcedElementInfo = WebElementsViewModelsHelper.CreateInfoFromModel(referencedElement);
-                var referencedElementModel = WebElementsViewModelsHelper.CreateModelFromInfo(referemcedElementInfo);
-                (createdWebElement as WebElementWithReferenceViewModel).ReferencedWebElement = referencedElementModel;
             }
+            if (createdElement == null) return;
 
             if (Selected == null)
             {
                 if (_webElementsTreeUserControl.WebElements == null)
                     _webElementsTreeUserControl.WebElements = new ObservableCollection<CombinedWebElementInfoViewModel>();
-                _webElementsTreeUserControl.WebElements.Add(createdWebElement as CombinedWebElementInfoViewModel);
+                _webElementsTreeUserControl.WebElements.Add(createdElement as CombinedWebElementInfoViewModel);
             }
             else
             {
@@ -125,18 +137,66 @@
                 if (comb.Elements == null)
                     comb.Elements = new ObservableCollection<WebElementInfoViewModel>();
 
-                comb.Elements.Add(createdWebElement);
-                createdWebElement.Parent = comb;
+                comb.Elements.Add(createdElement);
+                createdElement.Parent = comb;
             }
+
+            return;
         }
 
-        private void CreateWebElemetnRefence(Func<WebElementInfoViewModel, string> validator)
+        private WebElementInfoViewModel CreateReference()
         {
-            var dialog = new WebElementCreateEditDialog(validator, _elementType,
-                _elementType);
-            if (dialog.ShowDialog() != true) return;
+            var blockedTypesToPick = WebElementsViewModelsHelper.GetBlockedElementTypesForElementType(_elementType);
 
-            var currrentElement = _webElementsTreeUserControl.SelectedWebElement;
+            var picker = new WebElementPickerDialog(_webElementsTreeUserControl.WebElements.ToList(),
+                null,
+                null,
+                blockedTypesToPick);
+
+            if (picker.ShowDialog() != true) return null;
+            var referenceTreePath = picker.SelectedWebElementTreePath;
+            var referencedElement = (WebElementInfoViewModel)_webElementsTreeUserControl.WebElements.FindNodeByTreePath(referenceTreePath);
+            var referenceCopy = WebElementsViewModelsHelper.CreateFullModelCopy(referencedElement);
+
+            var templateInfo = WebElementsViewModelsHelper.CreateModelFromWebElementType(WebElementTypes.Reference)
+                as WebElementWithReferenceViewModel;
+            WebElementsViewModelsHelper.FillModelWithBaseInfo(templateInfo, referencedElement);
+            templateInfo.Locator = null;
+            templateInfo.ElementType = WebElementTypes.Reference;
+            templateInfo.ReferenceBreadString = referenceTreePath;
+            templateInfo.ReferencedWebElement = referenceCopy;
+
+            var validator = WebElementCommandsHelper.GetCreateUpdateWebElementValidator(_webElementsTreeUserControl, null, true);
+            var createdElement = CreateWebElementInfo(null, templateInfo) as WebElementWithReferenceViewModel;
+
+            createdElement.ReferencedWebElement = referenceCopy;
+            if (createdElement.Elements == null)
+                createdElement.Elements = new ObservableCollection<WebElementInfoViewModel>();
+            createdElement.Elements.Add(referenceCopy);
+            referenceCopy.Parent = createdElement;
+
+            return createdElement;
+        }
+
+        private WebElementInfoViewModel CreateWebElementInfo(CombinedWebElementInfoViewModel parent = null, WebElementInfoViewModel template = null)
+        {
+            var validator = WebElementCommandsHelper.GetCreateUpdateWebElementValidator(_webElementsTreeUserControl, null,
+                _elementType != WebElementTypes.Directory);
+
+            //TODO: add ctor override to accept WebElementInfoViewModel with default data
+            var dialog = new WebElementCreateEditDialog(validator,
+                parent ?? Selected as CombinedWebElementInfoViewModel,
+                _elementType,
+                template);
+            dialog.WebElements = _webElementsTreeUserControl.WebElements;
+            if (dialog.ShowDialog() != true) return null;
+
+            var createdWebElement = WebElementsViewModelsHelper.CreateModelFromWebElementType(_elementType);
+            WebElementsViewModelsHelper.FillModelWithBaseInfo(
+                createdWebElement,
+                dialog.WebElement);
+
+            return createdWebElement;
         }
     }
 }

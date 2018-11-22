@@ -139,6 +139,7 @@
     <Compile Include="Controls\WebElementLocatorsPathUserControl.xaml.cs">
       <DependentUpon>WebElementLocatorsPathUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\WebElementsTreeUserControlCommands\GoToReferencedCommand.cs" />
     <Compile Include="Converters\IsFrameLocatorConverter.cs" />
     <Compile Include="Converters\TreePathToWebElementConverter.cs" />
     <Compile Include="Converters\NotFrameLocatorIsLocatorConverter.cs" />

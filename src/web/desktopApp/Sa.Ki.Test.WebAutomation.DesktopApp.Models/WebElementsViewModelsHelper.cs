@@ -31,6 +31,39 @@
 
             switch (model)
             {
+                case WebElementWithReferenceViewModel wr:
+                    {
+                        var innerInfo = CreateInfoFromModel(wr.ReferencedWebElement);
+
+                        switch (wr.ElementType)
+                        {
+                            case WebElementTypes.Frame:
+
+                                var f = new FrameWebElementInfo();
+                                f.TreePathToInnerElement = wr.ReferenceBreadString;
+                                innerInfo.Parent = f;
+                                f.InnerElement = innerInfo;
+                                info = f;
+
+                                break;
+                            case WebElementTypes.Reference:
+
+                                var r = new WebElementReference();
+                                r.TreePathToReferencedElement = wr.ReferenceBreadString;
+                                innerInfo.Parent = r;
+                                r.ReferencedElement = innerInfo;
+                                info = r;
+
+                                break;
+
+                            default:
+                                throw new Exception($"Unexpected WebElementWithReferenceViewModel ElementType: {wr.ElementType}");
+
+                        }
+                    }
+                    break;
+
+
                 case CombinedWebElementInfoViewModel combinedModel:
                     {
                         CombinedWebElementInfo combined = null;
@@ -63,32 +96,6 @@
                         combined.Elements = combinedModel.Elements
                             ?.Select(em => CreateInfoFromModel(em, combined))
                             .ToList();
-                    }
-                    break;
-
-                case WebElementWithReferenceViewModel wr:
-                    {
-                        switch (wr.ElementType)
-                        {
-                            case WebElementTypes.Frame:
-
-                                var f = new FrameWebElementInfo();
-                                f.TreePathToInnerElement = wr.ReferenceBreadString;
-                                info = f;
-
-                                break;
-                            case WebElementTypes.Reference:
-
-                                var r = new WebElementReference();
-                                r.TreePathToReferencedElement = wr.ReferenceBreadString;
-                                info = r;
-
-                                break;
-
-                            default:
-                                throw new Exception($"Unexpected WebElementWithReferenceViewModel ElementType: {wr.ElementType}");
-
-                        }
                     }
                     break;
 
@@ -255,7 +262,8 @@
             {
                 copy = new WebElementWithReferenceViewModel
                 {
-                    ReferenceBreadString = referenced.ReferenceBreadString
+                    ReferenceBreadString = referenced.ReferenceBreadString,
+                    ReferencedWebElement = referenced.ReferencedWebElement
                 };
             }
             else
@@ -291,12 +299,17 @@
             return copy;
         }
 
-        public static void FillModelWithBaseInfo(WebElementInfoViewModel model, WebElementInfoViewModel baseInfo)
+        public static void FillModelWithBaseInfo(WebElementInfoViewModel model, WebElementInfoViewModel baseInfo, bool ifNotNullOnly = false)
         {
-            model.Name = baseInfo.Name;
-            model.Description = baseInfo.Description;
-            model.ElementType = baseInfo.ElementType;
-            model.InnerKey = baseInfo.InnerKey;
+            if (!ifNotNullOnly || baseInfo.Name != null)
+                model.Name = baseInfo.Name;
+            if (!ifNotNullOnly || baseInfo.Description != null)
+                model.Description = baseInfo.Description;
+            if (!ifNotNullOnly || baseInfo.ElementType != null)
+                model.ElementType = baseInfo.ElementType;
+            if (!ifNotNullOnly || baseInfo.InnerKey != null)
+                model.InnerKey = baseInfo.InnerKey;
+
             model.IsKey = baseInfo.IsKey;
 
             if (baseInfo.Tags == null)
@@ -313,9 +326,13 @@
                 toAdd.ToList().ForEach(t => model.Tags.Add(t));
             }
 
-            if (model is WebElementWithReferenceViewModel referenced)
+            if (model is WebElementWithReferenceViewModel referenced
+                && baseInfo is WebElementWithReferenceViewModel refsInfo)
             {
-                referenced.ReferenceBreadString = (baseInfo as WebElementWithReferenceViewModel).ReferenceBreadString;
+                if (!ifNotNullOnly || refsInfo.ReferenceBreadString != null)
+                    referenced.ReferenceBreadString = refsInfo.ReferenceBreadString;
+                if (!ifNotNullOnly || refsInfo.ReferencedWebElement != null)
+                    referenced.ReferencedWebElement = refsInfo.ReferencedWebElement;
             }
 
             if (model.ElementType == WebElementTypes.Frame)
@@ -324,12 +341,30 @@
                     = (baseInfo.Locator as FrameWebLocatorInfoViewModel).FrameLocatorType;
             }
 
-            if (model.ElementType != WebElementTypes.Directory)
+            if (model.ElementType != WebElementTypes.Directory
+                && (!ifNotNullOnly || baseInfo.Locator != null))
             {
                 model.Locator.LocatorType = baseInfo.Locator.LocatorType;
                 model.Locator.LocatorValue = baseInfo.Locator.LocatorValue;
                 model.Locator.IsRelative = baseInfo.Locator.IsRelative;
             }
+        }
+
+        public static WebElementInfoViewModel CreateFullModelCopy(WebElementInfoViewModel model)
+        {
+            var info = CreateInfoFromModel(model);
+            return CreateModelFromInfo(info);
+        }
+
+        public static bool IsAnyParentReference(WebElementInfoViewModel model)
+        {
+            var parent = model?.Parent;
+            while (parent != null)
+            {
+                if (parent is WebElementWithReferenceViewModel) return true;
+                parent = parent.Parent;
+            }
+            return false;
         }
     }
 }

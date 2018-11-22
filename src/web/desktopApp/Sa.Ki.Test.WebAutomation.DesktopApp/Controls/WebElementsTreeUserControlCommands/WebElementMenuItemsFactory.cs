@@ -29,20 +29,32 @@
             var p = elementInfo?.Parent?.ElementType ?? "Root";
             var key = $"Menu Items for {et} {p}";
 
+            var isAnyParentRef = WebElementsViewModelsHelper.IsAnyParentReference(elementInfo);
+            if (isAnyParentRef)
+                key = "Reference";
+
             if (!_menusCache.ContainsKey(key))
             {
                 var items = new List<SaKiMenuItemViewModel>();
 
-                if (elementInfo != null)
+                if (isAnyParentRef)
                 {
                     items.Add(CreateCopyNameMenuItem());
-                    items.Add(CreateEditMenuItem());
+                    items.Add(CreateGoToReferencedMenuItem());
                 }
+                else
+                {
+                    if (elementInfo != null)
+                    {
+                        items.Add(CreateCopyNameMenuItem());
+                        items.Add(CreateEditMenuItem());
+                    }
 
-                if (WebElementCommandsHelper.CanElementHasCustomChildren(elementInfo))
-                    items.Add(CreateCreateMenuItemGroup(et));
+                    if (WebElementCommandsHelper.CanElementHasCustomChildren(elementInfo))
+                        items.Add(CreateCreateMenuItemGroup(et));
 
-                items.Add(CreateActionsMenuItemGroup(et, p));
+                    items.Add(CreateActionsMenuItemGroup(et, p));
+                }
 
                 _menusCache[key] = items;
             }
@@ -59,6 +71,20 @@
                     Name = "Copy Name",
                     Description = "Copy name of selected WebElementInfo",
                     Command = new CopyNameCommand(_webElementsTreeUserControl)
+                };
+            }
+            return _cache[key];
+        }
+        public SaKiMenuItemViewModel CreateGoToReferencedMenuItem()
+        {
+            var key = "Go to Referenced";
+            if (!_cache.ContainsKey(key))
+            {
+                _cache[key] = new SaKiCommandMenuItemViewModel
+                {
+                    Name = "Go to Referenced",
+                    Description = "Go to Referenced WebElement",
+                    Command = new GoToReferencedCommand(_webElementsTreeUserControl)
                 };
             }
             return _cache[key];

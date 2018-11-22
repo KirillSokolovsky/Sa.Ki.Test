@@ -52,8 +52,8 @@
                 else throw new SakiWebElementException($"Unknown element with reference. Element type {elementInfo.ElementType}", elementInfo);
             }
 
-            if (searchInfo == null)
-                searchInfo = new WebSearchInfo
+            searchInfo = searchInfo
+                ?? new WebSearchInfo
                 {
                     LocatorType = locator.LocatorType,
                     LocatorValue = locator.LocatorValue,
@@ -64,38 +64,36 @@
             {
                 var parent = elementInfo.Parent;
 
-                while (parent != null
-                    && parent.ElementType != WebElementTypes.Frame
-                    && parent.ElementType != WebElementTypes.Directory)
+                if (parent?.Parent.ElementType == WebElementTypes.Reference)
                 {
-                    var parentLocator = parent.Locator;
-                    if (searchInfo.LocatorType == parentLocator.LocatorType
-                        && (searchInfo.LocatorType == WebLocatorType.XPath || searchInfo.LocatorType == WebLocatorType.Css))
+                    if (parent.Parent.Locator != null)
+                        parent = parent.Parent;
+                }
+
+                if (parent != null
+                        && parent.ElementType != WebElementTypes.Frame
+                        && parent.ElementType != WebElementTypes.Directory)
+                {
+                    var parentSearch = parent.GetWebSearch();
+
+                    if (searchInfo.LocatorType == parentSearch.LocatorType
+                            && (searchInfo.LocatorType == WebLocatorType.XPath || searchInfo.LocatorType == WebLocatorType.Css))
                     {
                         if (searchInfo.LocatorType == WebLocatorType.XPath)
-                        {
-                            searchInfo.LocatorValue = MergeXPath(parentLocator.LocatorValue, searchInfo.LocatorValue);
-                        }
+                            searchInfo.LocatorValue = MergeXPath(parentSearch.LocatorValue, searchInfo.LocatorValue);
                         else
-                        {
-                            searchInfo.LocatorValue = MergeCss(parentLocator.LocatorValue, searchInfo.LocatorValue);
-                        }
-                    }
-                    else if(parentLocator.LocatorType == WebLocatorType.XPath
-                        && parentLocator.LocatorValue == ".")
-                    {
+                            searchInfo.LocatorValue = MergeCss(parentSearch.LocatorValue, searchInfo.LocatorValue);
 
+                        searchInfo.ParentSearch = parentSearch.ParentSearch;
                     }
                     else
-                    {
-                        searchInfo.ParentSearch = BuildWebSearch(parent);
-                        return searchInfo;
-                    }
+                        searchInfo.ParentSearch = parentSearch;
 
-                    if (!parentLocator.IsRelative)
-                        break;
+                    if (searchInfo.LocatorType == WebLocatorType.XPath
+                        && searchInfo.LocatorValue == ".")
+                        return parentSearch;
 
-                    parent = parent.Parent;
+                    return searchInfo;
                 }
             }
 
@@ -106,7 +104,7 @@
         public static void BuildWebSearchFrames(IWebElementInfo elementInfo, WebSearchInfo webSearchInfo)
         {
             var parent = elementInfo.Parent;
-            while(parent != null && parent.ElementType != WebElementTypes.Directory)
+            while (parent != null && parent.ElementType != WebElementTypes.Directory)
             {
                 if (parent.ElementType == WebElementTypes.Frame)
                 {

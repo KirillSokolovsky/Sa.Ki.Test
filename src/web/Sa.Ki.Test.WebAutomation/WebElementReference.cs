@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class WebElementReference : WebElementInfo, IWebElementWithReferenceInfo
+    public class WebElementReference : CombinedWebElementInfo, IWebElementWithReferenceInfo
     {
         public WebElementInfo ReferencedElement { get; set; }
         public string TreePathToReferencedElement { get; set; }

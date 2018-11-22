@@ -73,28 +73,23 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
             DataContext = this;
         }
 
-        public WebElementCreateEditDialog(Func<WebElementInfoViewModel, string> validate, string elementType,
-            string prefilledName = null,
-            string prefilledDescription = null,
-            string prefilledInnerKey = null,
-            bool prefilledLocatorIsRelative = false)
+        public WebElementCreateEditDialog(Func<WebElementInfoViewModel, string> validate,
+            CombinedWebElementInfoViewModel parent,
+            string elementType,
+            WebElementInfoViewModel baseInfo)
         {
             _validate = validate;
+            IsEditMode = false;
 
             Title = $"Create new WebElement with type: {elementType}";
-            if (prefilledInnerKey != null)
-                Title = $"Specify new WebElement with role {prefilledInnerKey}";
-
-            IsEditMode = false;
             WebElement = WebElementsViewModelsHelper.CreateModelFromWebElementType(elementType);
 
-            WebElement.ElementType = elementType;
-            WebElement.Description = prefilledDescription;
-            WebElement.InnerKey = prefilledInnerKey;
-            WebElement.Name = prefilledName;
-
-            if (elementType != WebElementTypes.Directory)
-                WebElement.Locator.IsRelative = prefilledLocatorIsRelative;
+            if (baseInfo != null)
+                WebElementsViewModelsHelper.FillModelWithBaseInfo(WebElement, baseInfo, true);
+            
+            if (WebElement.InnerKey != null)
+                Title = $"Specify new WebElement with role {WebElement.InnerKey}";
+            WebElement.Parent = parent;
 
             InitializeComponent();
 

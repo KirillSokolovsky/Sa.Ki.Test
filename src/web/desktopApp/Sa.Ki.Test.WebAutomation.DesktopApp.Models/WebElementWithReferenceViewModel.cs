@@ -8,7 +8,7 @@
     using ReactiveUI;
     using Sa.Ki.Test.SakiTree;
 
-    public class WebElementWithReferenceViewModel : WebElementInfoViewModel, IWebElementWithReferenceInfo
+    public class WebElementWithReferenceViewModel : CombinedWebElementInfoViewModel, IWebElementWithReferenceInfo
     {
         public WebElementWithReferenceViewModel(FrameWebElementInfo frameWebElement)
             : base(frameWebElement)
