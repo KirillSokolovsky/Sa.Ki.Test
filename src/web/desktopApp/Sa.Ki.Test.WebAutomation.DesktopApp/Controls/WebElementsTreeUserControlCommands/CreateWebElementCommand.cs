@@ -27,10 +27,13 @@
             if (_elementType == WebElementTypes.Reference)
             {
                 createdElement = CreateReference();
+                if (createdElement == null) return;
             }
             else
             {
                 createdElement = CreateWebElementInfo();
+
+                if (createdElement == null) return;
 
                 if (_elementType == WebElementTypes.DropDown
                     || _elementType == WebElementTypes.RadioGroup)
@@ -60,6 +63,7 @@
                         var inputElement = CreateWebElementInfo(
                             combinedCreatedElement,
                             inputTemplate);
+                        if (inputElement == null) return;
 
                         inputElement.Parent = combinedCreatedElement;
                         combinedCreatedElement.Elements.Add(inputElement);
@@ -85,6 +89,7 @@
                     var optionElement = CreateWebElementInfo(
                         combinedCreatedElement,
                         optionTemplate);
+                    if (optionElement == null) return;
 
                     optionElement.Parent = combinedCreatedElement;
                     combinedCreatedElement.Elements.Add(optionElement);
@@ -166,8 +171,9 @@
             templateInfo.ReferenceBreadString = referenceTreePath;
             templateInfo.ReferencedWebElement = referenceCopy;
 
-            var validator = WebElementCommandsHelper.GetCreateUpdateWebElementValidator(_webElementsTreeUserControl, null, true);
             var createdElement = CreateWebElementInfo(null, templateInfo) as WebElementWithReferenceViewModel;
+
+            if (createdElement == null) return null;
 
             createdElement.ReferencedWebElement = referenceCopy;
             if (createdElement.Elements == null)
@@ -180,8 +186,7 @@
 
         private WebElementInfoViewModel CreateWebElementInfo(CombinedWebElementInfoViewModel parent = null, WebElementInfoViewModel template = null)
         {
-            var validator = WebElementCommandsHelper.GetCreateUpdateWebElementValidator(_webElementsTreeUserControl, null,
-                _elementType != WebElementTypes.Directory);
+            var validator = WebElementCommandsHelper.GetCreateUpdateWebElementValidator(_webElementsTreeUserControl, null);
 
             //TODO: add ctor override to accept WebElementInfoViewModel with default data
             var dialog = new WebElementCreateEditDialog(validator,

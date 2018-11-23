@@ -20,6 +20,7 @@
             : base(webElementReference)
         {
             ReferenceBreadString = webElementReference.TreePathToReferencedElement;
+            HasLocator = webElementReference.Locator != null;
             ReferencedWebElement = WebElementsViewModelsHelper.CreateModelFromInfo(webElementReference.ReferencedElement);
         }
 
@@ -48,6 +49,13 @@
         {
             get => _referencedWebElement;
             set => this.RaiseAndSetIfChanged(ref _referencedWebElement, value);
+        }
+
+        private bool _hasLocator;
+        public bool HasLocator
+        {
+            get => _hasLocator;
+            set => this.RaiseAndSetIfChanged(ref _hasLocator, value);
         }
 
         public IWebElementInfo ReferencedElement => ReferencedWebElement;

@@ -19,7 +19,7 @@
         <dacnv:InvertBoolConverter x:Key="NotCnv"></dacnv:InvertBoolConverter>
         <dacnv:StringNullOrEmptyConverter x:Key="IsNullOrEmptyCnv"></dacnv:StringNullOrEmptyConverter>
         <dacnv:NullableCollectionLength x:Key="NullableCollectionLengthCnv"></dacnv:NullableCollectionLength>
-        
+
         <cnv:WebElementToTreePathConverter x:Key="BreadCnv"></cnv:WebElementToTreePathConverter>
 
         <wi:WebElementInfoDetailsTemplateSelector x:Key="TmplSelector"></wi:WebElementInfoDetailsTemplateSelector>
@@ -175,7 +175,6 @@
                 <GroupBox Grid.Row="1" Header="Locator:" Margin="5" Background="Transparent">
                     <local:WebLocatorInfoUserControl WebLocator="{Binding Locator}"
                                              IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebElementInfoUserControl}}}">
-
                     </local:WebLocatorInfoUserControl>
                 </GroupBox>
 
@@ -210,13 +209,15 @@
                                   Content="{Binding}" 
                                   ContentTemplate="{StaticResource TagsAndLocator}">
                 </ContentPresenter>
-                
+
             </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="ElementWithReferenceInfo" DataType="{x:Type mdls:WebElementWithReferenceViewModel}">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -254,10 +255,87 @@
                     </Button>
                 </WrapPanel>
 
-                <ContentPresenter Grid.Row="3" 
-                                  Content="{Binding}" 
-                                  ContentTemplate="{StaticResource TagsAndLocator}">
-                </ContentPresenter>
+                <Expander Grid.Row="3" Margin="5" Background="Transparent"
+                  MaxHeight="300"
+                  ExpandDirection="Down">
+
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Tags ("></TextBlock>
+                            <TextBlock Text="{Binding Tags, Converter={StaticResource NullableCollectionLengthCnv}}"></TextBlock>
+                            <TextBlock Text=")"></TextBlock>
+                        </StackPanel>
+                    </Expander.Header>
+
+                    <dacn:ListOfStringsUserControl StringItems="{Binding Tags, Mode=TwoWay}"
+                                           IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebElementInfoUserControl}}}"
+                                           ItemName="Tag">
+
+                    </dacn:ListOfStringsUserControl>
+
+                    <Expander.Style>
+                        <Style TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
+
+                            <Setter Property="BorderThickness" Value="0"></Setter>
+
+                            <Style.Triggers>
+                                <Trigger Property="IsExpanded" Value="True">
+                                    <Setter Property="BorderThickness" Value="0 0 1 1"></Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Expander.Style>
+
+                </Expander>
+
+                <GroupBox Grid.Row="4" Header="Locator:" Margin="5" Background="Transparent">
+                    <StackPanel>
+
+                        <WrapPanel>
+                            <Label>Override?</Label>
+                            <CheckBox IsChecked="{Binding HasLocator, UpdateSourceTrigger=PropertyChanged}"
+                                      Padding="5"
+                                      VerticalAlignment="Center"
+                                      IsEnabled="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebElementInfoUserControl}}, Converter={StaticResource NotCnv}}">
+                            </CheckBox>
+                            <WrapPanel.Style>
+                                <Style TargetType="WrapPanel" BasedOn="{StaticResource {x:Type WrapPanel}}">
+                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementType}" Value="Reference">
+                                            <Setter Property="Visibility" Value="Visible"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </WrapPanel.Style>
+                        </WrapPanel>
+
+                        <local:WebLocatorInfoUserControl>
+                            <local:WebLocatorInfoUserControl.Style>
+                                <Style TargetType="local:WebLocatorInfoUserControl">
+                                    <Setter Property="WebLocator" Value="{Binding Locator}"></Setter>
+                                    <Setter Property="IsReadOnly" Value="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type local:WebElementInfoUserControl}}}"></Setter>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ElementType}" Value="Reference"></Condition>
+                                                <Condition Binding="{Binding HasLocator}" Value="False"></Condition>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="WebLocator" Value="{Binding ReferencedWebElement.Locator}"></Setter>
+                                            <Setter Property="IsReadOnly" Value="True"></Setter>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </local:WebLocatorInfoUserControl.Style>
+                        </local:WebLocatorInfoUserControl>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Grid.Row="5" Header="Locators path:" Margin="5" Background="Transparent">
+                    <local:WebElementLocatorsPathUserControl WebElement="{Binding}">
+
+                    </local:WebElementLocatorsPathUserControl>
+                </GroupBox>
 
             </Grid>
         </DataTemplate>

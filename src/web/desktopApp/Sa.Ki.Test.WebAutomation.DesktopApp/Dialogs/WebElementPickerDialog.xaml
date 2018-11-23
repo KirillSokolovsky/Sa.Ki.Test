@@ -33,7 +33,6 @@
         </Grid.RowDefinitions>
 
         <Menu Grid.Row="0">
-            <MenuItem Header="Cancel" Click="CancelMenuItem_Click"></MenuItem>
             <MenuItem Click="SelectMenuItem_Click">
                 <MenuItem.Style>
                     <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
@@ -46,6 +45,7 @@
                     </Style>
                 </MenuItem.Style>
             </MenuItem>
+            <MenuItem Header="Cancel" Click="CancelMenuItem_Click"></MenuItem>
         </Menu>
 
         <StackPanel Grid.Row="1">

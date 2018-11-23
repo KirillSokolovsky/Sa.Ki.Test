@@ -257,14 +257,17 @@
         public static WebElementInfoViewModel CreateModelCopyWithBaseInfo(WebElementInfoViewModel model)
         {
             WebElementInfoViewModel copy = null;
+            var copyLocator = model.ElementType != WebElementTypes.Directory;
 
             if (model is WebElementWithReferenceViewModel referenced)
             {
                 copy = new WebElementWithReferenceViewModel
                 {
                     ReferenceBreadString = referenced.ReferenceBreadString,
-                    ReferencedWebElement = referenced.ReferencedWebElement
+                    ReferencedWebElement = referenced.ReferencedWebElement,
+                    HasLocator = referenced.HasLocator
                 };
+                copyLocator = referenced.ElementType == WebElementTypes.Reference && referenced.HasLocator;
             }
             else
             {
@@ -280,7 +283,7 @@
             if (model.Tags != null)
                 copy.Tags = new ObservableCollection<string>(model.Tags.ToList());
 
-            if (model.ElementType != WebElementTypes.Directory)
+            if (copyLocator)
             {
                 if (model.ElementType == WebElementTypes.Frame)
                 {
@@ -333,6 +336,7 @@
                     referenced.ReferenceBreadString = refsInfo.ReferenceBreadString;
                 if (!ifNotNullOnly || refsInfo.ReferencedWebElement != null)
                     referenced.ReferencedWebElement = refsInfo.ReferencedWebElement;
+                referenced.HasLocator = refsInfo.HasLocator;
             }
 
             if (model.ElementType == WebElementTypes.Frame)

@@ -87,7 +87,13 @@
                         searchInfo.ParentSearch = parentSearch.ParentSearch;
                     }
                     else
-                        searchInfo.ParentSearch = parentSearch;
+                    {
+                        if (parentSearch.LocatorType == WebLocatorType.XPath
+                            && parentSearch.LocatorValue == ".")
+                            searchInfo.ParentSearch = parentSearch.ParentSearch;
+                        else
+                            searchInfo.ParentSearch = parentSearch;
+                    }
 
                     if (searchInfo.LocatorType == WebLocatorType.XPath
                         && searchInfo.LocatorValue == ".")

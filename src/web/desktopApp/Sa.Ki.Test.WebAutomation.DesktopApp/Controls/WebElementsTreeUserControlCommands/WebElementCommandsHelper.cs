@@ -14,7 +14,10 @@
             return
               elementInfo == null //It's a tree view root, so we could add at least Context
               || (elementInfo is CombinedWebElementInfoViewModel
-                  && !(elementInfo.ElementType == WebElementTypes.DropDown || elementInfo.ElementType == WebElementTypes.RadioGroup));
+                  && !(elementInfo.ElementType == WebElementTypes.DropDown 
+                        || elementInfo.ElementType == WebElementTypes.RadioGroup 
+                        || elementInfo.ElementType == WebElementTypes.Reference
+                        || elementInfo.ElementType == WebElementTypes.Frame));
         }
 
         public static bool CanBeCut(WebElementInfoViewModel el)
@@ -46,8 +49,7 @@
 
         public static Func<WebElementInfoViewModel, string> GetCreateUpdateWebElementValidator(
             WebElementsTreeUserControl webElementsTreeUserControl,
-            string originalName,
-            bool declineEmptyLocator = true)
+            string originalName)
         {
             Func<WebElementInfoViewModel, string> validator = el =>
             {
@@ -60,6 +62,13 @@
                     result.AppendLine("WebElement Name couldn't be empty");
                 if (string.IsNullOrWhiteSpace(el.Description))
                     result.AppendLine("WebElement Description couldn't be empty");
+
+                var declineEmptyLocator = el.ElementType == WebElementTypes.Directory;
+                if (el is WebElementWithReferenceViewModel wRefModel)
+                {
+                    declineEmptyLocator = wRefModel.HasLocator;
+                }
+
                 if (declineEmptyLocator && string.IsNullOrWhiteSpace(el.Locator.LocatorValue))
                     result.AppendLine("WebElement Locator.LocatorValue couldn't be empty");
 

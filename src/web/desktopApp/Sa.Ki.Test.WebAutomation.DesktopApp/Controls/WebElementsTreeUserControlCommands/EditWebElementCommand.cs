@@ -24,8 +24,7 @@
         {
             var validator = WebElementCommandsHelper.GetCreateUpdateWebElementValidator(
                 _webElementsTreeUserControl,
-                Selected.Name,
-                Selected.ElementType != WebElementTypes.Directory);
+                Selected.Name);
             
             var editDialog = new WebElementCreateEditDialog(validator, Selected);
             editDialog.WebElements = _webElementsTreeUserControl.WebElements;

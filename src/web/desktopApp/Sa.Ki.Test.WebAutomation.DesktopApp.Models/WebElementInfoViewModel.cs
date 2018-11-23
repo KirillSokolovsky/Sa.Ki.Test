@@ -29,6 +29,9 @@
             if (_sourceWebElement.Tags != null)
                 Tags = new ObservableCollection<string>(_sourceWebElement.Tags);
 
+            if(webElementInfo == null
+                || !(webElementInfo.ElementType == WebElementTypes.Reference
+                        && (webElementInfo as WebElementReference).Locator == null))
             Locator = WebElementsViewModelsHelper.CreateLocatorModel(_sourceWebElement.Locator);
         }
 
