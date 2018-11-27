@@ -13,6 +13,8 @@
         public FrameWebLocatorInfoViewModel(WebLocatorInfo locatorInfo = null)
             : base(locatorInfo ?? new FrameWebLocatorInfo())
         {
+            this.WhenAnyValue(w => w.FrameLocatorType)
+                .Subscribe(t => Value = $"{t} > {IsRelative} | {LocatorType}: {LocatorValue}");
         }
 
         private FrameLocatorType _frameLocatorType;

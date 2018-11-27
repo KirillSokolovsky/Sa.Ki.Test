@@ -267,6 +267,7 @@
                     ReferencedWebElement = referenced.ReferencedWebElement,
                     HasLocator = referenced.HasLocator
                 };
+                copy.Locator = null;
                 copyLocator = referenced.ElementType == WebElementTypes.Reference && referenced.HasLocator;
             }
             else
@@ -313,7 +314,8 @@
             if (!ifNotNullOnly || baseInfo.InnerKey != null)
                 model.InnerKey = baseInfo.InnerKey;
 
-            model.IsKey = baseInfo.IsKey;
+            if (!ifNotNullOnly)
+                model.IsKey = baseInfo.IsKey;
 
             if (baseInfo.Tags == null)
                 model.Tags = null;
@@ -335,7 +337,34 @@
                 if (!ifNotNullOnly || refsInfo.ReferenceBreadString != null)
                     referenced.ReferenceBreadString = refsInfo.ReferenceBreadString;
                 if (!ifNotNullOnly || refsInfo.ReferencedWebElement != null)
+                {
                     referenced.ReferencedWebElement = refsInfo.ReferencedWebElement;
+                    referenced.ReferencedWebElement.Parent = referenced;
+
+                    if (referenced.Elements == null)
+                        referenced.Elements = new ObservableCollection<WebElementInfoViewModel>();
+                    referenced.Elements.Clear();
+
+                    if (referenced.ElementType == WebElementTypes.Frame)
+                    {
+                        referenced.Elements.Add(referenced.ReferencedWebElement);
+                    }
+                    else if (referenced.ReferencedWebElement is CombinedWebElementInfoViewModel combinedRef)
+                    {
+                        if (combinedRef.Elements != null)
+                        {
+                            if (referenced.Elements == null)
+                                referenced.Elements = new ObservableCollection<WebElementInfoViewModel>();
+                            referenced.Elements.Clear();
+
+                            foreach (var c in combinedRef.Elements)
+                            {
+                                referenced.Elements.Add(c);
+                                c.Parent = referenced;
+                            }
+                        }
+                    }
+                }
                 referenced.HasLocator = refsInfo.HasLocator;
             }
 
@@ -348,9 +377,14 @@
             if (model.ElementType != WebElementTypes.Directory
                 && (!ifNotNullOnly || baseInfo.Locator != null))
             {
-                model.Locator.LocatorType = baseInfo.Locator.LocatorType;
-                model.Locator.LocatorValue = baseInfo.Locator.LocatorValue;
-                model.Locator.IsRelative = baseInfo.Locator.IsRelative;
+                if (baseInfo.Locator != null)
+                {
+                    if (model.Locator == null)
+                        model.Locator = CreateLocatorModel(baseInfo.Locator.GetLocatorInfo());
+                    model.Locator.LocatorType = baseInfo.Locator.LocatorType;
+                    model.Locator.LocatorValue = baseInfo.Locator.LocatorValue;
+                    model.Locator.IsRelative = baseInfo.Locator.IsRelative;
+                }
             }
         }
 

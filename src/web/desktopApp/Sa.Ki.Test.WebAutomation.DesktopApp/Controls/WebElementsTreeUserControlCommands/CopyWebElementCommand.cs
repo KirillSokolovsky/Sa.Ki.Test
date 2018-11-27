@@ -16,7 +16,7 @@
 
         public override bool CanExecute(object parameter)
         {
-            return Selected != null;
+            return Selected != null && !WebElementsViewModelsHelper.IsAnyParentReference(Selected);
         }
 
         protected override void ExecuteCommand()

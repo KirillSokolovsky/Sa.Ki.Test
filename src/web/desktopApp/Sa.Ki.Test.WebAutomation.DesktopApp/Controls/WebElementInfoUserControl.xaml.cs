@@ -69,7 +69,64 @@
 
             if (picker.ShowDialog() != true) return;
 
+            if (rm.ReferenceBreadString == picker.SelectedWebElementTreePath) return;
+
             rm.ReferenceBreadString = picker.SelectedWebElementTreePath;
+
+            var r = (WebElementInfoViewModel)WebElements.FindNodeByTreePath(rm.ReferenceBreadString);
+            var copy = WebElementsViewModelsHelper.CreateFullModelCopy(r);
+
+            if (rm.ElementType == WebElementTypes.Reference)
+            {
+                var baseInfo = new WebElementInfoViewModel
+                {
+                    Name = copy.Name,
+                    Description = copy.Description,
+                    Tags = copy.Tags,
+                    ElementType = null,
+                    Locator = null,
+                    InnerKey = null,
+                };
+
+                WebElementsViewModelsHelper.FillModelWithBaseInfo(rm, baseInfo, true);
+            }
+
+            rm.Elements?.Clear();
+            if (rm.Elements == null)
+                rm.Elements = new ObservableCollection<WebElementInfoViewModel>();
+
+            if(rm.ElementType == WebElementTypes.Reference)
+            {
+                if(copy is CombinedWebElementInfoViewModel combinedRef)
+                {
+                    if(combinedRef.Elements != null)
+                    {
+                        foreach (var c in combinedRef.Elements)
+                        {
+                            rm.Elements.Add(c);
+                            c.Parent = rm;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (rm.ReferencedWebElement != null)
+                {
+                    rm.ReferencedWebElement.Parent = null;
+                    rm.ReferencedWebElement = null;
+                }
+
+                rm.Elements.Add(copy);
+            }
+
+            rm.ReferencedWebElement = copy;
+            copy.Parent = rm;
+            rm.HasLocator = false;
+
+            WebElement = WebElementsViewModelsHelper.CreateFullModelCopy(rm);
+            UpdateLayout();
+            WebElement = rm;
         }
     }
 }

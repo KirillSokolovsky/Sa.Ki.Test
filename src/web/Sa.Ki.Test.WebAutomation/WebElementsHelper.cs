@@ -26,7 +26,7 @@
                         throw new SakiWebElementException($"Element with type: {elementInfo.ElementType} has nullable reference", elementInfo);
 
                     if (elWithRef.Locator == null)
-                        locator = elWithRef.Locator;
+                        locator = elWithRef.ReferencedElement.Locator;
                 }
                 //if it's Frame, check frame locator type
                 else if (elWithRef.ElementType == WebElementTypes.Frame)
@@ -60,14 +60,30 @@
                     ParentSearch = null
                 };
 
-            if (locator.IsRelative)
+            if (locator.IsRelative && elementInfo.Parent != null)
             {
                 var parent = elementInfo.Parent;
 
-                if (parent?.Parent.ElementType == WebElementTypes.Reference)
+                if (parent.ElementType == WebElementTypes.Reference)
                 {
-                    if (parent.Parent.Locator != null)
-                        parent = parent.Parent;
+                    if (parent.Locator == null)
+                    {
+                        if(parent is IWebElementWithReferenceInfo parentRefs)
+                        {
+                            var refed = parentRefs.ReferencedElement;
+                            if(refed == null)
+                                throw new SakiWebElementException($"Referenced element in parent is NULL.", elementInfo);
+
+                            if (elementInfo == refed)
+                                parent = parent.Parent;
+                            else if(refed is ICombinedWebElementInfo refedCombined)
+                                parent = refedCombined;
+                            else
+                                throw new SakiWebElementException($"Referenced element in parent is not a combined element.", elementInfo);
+                        }
+                        else
+                            throw new SakiWebElementException($"Element with type Reference is not a reference.", elementInfo);
+                    }
                 }
 
                 if (parent != null

@@ -321,7 +321,7 @@
                                                 <Condition Binding="{Binding ElementType}" Value="Reference"></Condition>
                                                 <Condition Binding="{Binding HasLocator}" Value="False"></Condition>
                                             </MultiDataTrigger.Conditions>
-                                            <Setter Property="WebLocator" Value="{Binding ReferencedWebElement.Locator}"></Setter>
+                                            <Setter Property="WebLocator" Value="{Binding ReferencedWebElement.Locator, UpdateSourceTrigger=PropertyChanged}"></Setter>
                                             <Setter Property="IsReadOnly" Value="True"></Setter>
                                         </MultiDataTrigger>
                                     </Style.Triggers>

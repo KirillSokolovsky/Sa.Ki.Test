@@ -119,6 +119,7 @@
                     copy.Parent = frameElement;
                     if (frameElement.Elements == null)
                         frameElement.Elements = new ObservableCollection<WebElementInfoViewModel>();
+                    frameElement.Elements.Clear();
                     frameElement.Elements.Add(copy);
                 }
             }
@@ -178,7 +179,6 @@
             createdElement.ReferencedWebElement = referenceCopy;
             if (createdElement.Elements == null)
                 createdElement.Elements = new ObservableCollection<WebElementInfoViewModel>();
-            createdElement.Elements.Add(referenceCopy);
             referenceCopy.Parent = createdElement;
 
             return createdElement;

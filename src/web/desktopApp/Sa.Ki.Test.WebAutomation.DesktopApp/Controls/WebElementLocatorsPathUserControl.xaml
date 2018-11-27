@@ -54,7 +54,21 @@
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
-                            <TextBlock Text="{Binding LocatorType}"></TextBlock>
+                            <TextBlock Text="{Binding LocatorType}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                        <Setter Property="Visibility" Value="Visible"></Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding FrameLocatorType}" Value="Index">
+                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding FrameLocatorType}" Value="Id">
+                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </WrapPanel>
                         <TextBox Text="{Binding LocatorValue}" BorderThickness="0" Margin="10 0 0 0"></TextBox>
                     </StackPanel>

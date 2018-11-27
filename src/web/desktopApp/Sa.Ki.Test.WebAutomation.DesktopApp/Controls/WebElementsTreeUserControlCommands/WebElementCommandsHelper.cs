@@ -23,6 +23,7 @@
         public static bool CanBeCut(WebElementInfoViewModel el)
         {
             if (el == null) return false;
+            if (WebElementsViewModelsHelper.IsAnyParentReference(el)) return false;
             if (el.Parent == null) return true;
             if (el.Parent.ElementType == WebElementTypes.DropDown || el.Parent.ElementType == WebElementTypes.RadioGroup)
                 return false;
@@ -36,15 +37,12 @@
         public static bool CanBeCloned(WebElementInfoViewModel el)
         {
             if (el == null) return false;
-            if (el.ElementType == WebElementTypes.Context && el.Parent == null)
-                return true;
+            if (WebElementsViewModelsHelper.IsAnyParentReference(el)) return false;
             if (el.Parent == null) return false;
             if (el.Parent.ElementType == WebElementTypes.DropDown || el.Parent.ElementType == WebElementTypes.RadioGroup)
                 return false;
-            if (el.Parent.ElementType == WebElementTypes.Control || el.Parent.ElementType == WebElementTypes.Context)
-                return true;
 
-            return false;
+            return true;
         }
 
         public static Func<WebElementInfoViewModel, string> GetCreateUpdateWebElementValidator(

@@ -21,6 +21,7 @@
         {
             var result = CutOrCopied != null
                 && Selected != CutOrCopied
+                && !WebElementsViewModelsHelper.IsAnyParentReference(Selected)
                 && WebElementCommandsHelper.CanElementHasCustomChildren(Selected)
                 && !(Cut != null && Selected.IsDescendantdFor(Cut as CombinedWebElementInfoViewModel))
                 && ((Selected as CombinedWebElementInfoViewModel)?.Elements

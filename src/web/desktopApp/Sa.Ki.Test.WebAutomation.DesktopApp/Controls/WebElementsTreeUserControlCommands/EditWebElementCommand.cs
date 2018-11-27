@@ -10,7 +10,7 @@
 
     public class EditWebElementCommand : WebElementCommand
     {
-        public EditWebElementCommand(WebElementsTreeUserControl webElementsTreeUserControl) 
+        public EditWebElementCommand(WebElementsTreeUserControl webElementsTreeUserControl)
             : base(webElementsTreeUserControl)
         {
         }
@@ -25,10 +25,18 @@
             var validator = WebElementCommandsHelper.GetCreateUpdateWebElementValidator(
                 _webElementsTreeUserControl,
                 Selected.Name);
-            
+
             var editDialog = new WebElementCreateEditDialog(validator, Selected);
             editDialog.WebElements = _webElementsTreeUserControl.WebElements;
             if (editDialog.ShowDialog() != true) return;
+
+            if (Selected.ElementType != WebElementTypes.Reference) return;
+
+            var selected = Selected;
+
+            _webElementsTreeUserControl.SelectedWebElement = null;
+            _webElementsTreeUserControl.UpdateLayout();
+            _webElementsTreeUserControl.SelectedWebElement = selected;
         }
     }
 }
