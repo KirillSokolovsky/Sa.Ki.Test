@@ -15,6 +15,11 @@
         public const string Context = nameof(Context);
 
         /// <summary>
+        /// Context web element. Contains other element
+        /// </summary>
+        public const string Page = nameof(Page);
+
+        /// <summary>
         /// Element that includes set of child elements
         /// </summary>
         public const string Control = nameof(Control);

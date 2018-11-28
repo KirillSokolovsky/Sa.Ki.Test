@@ -21,6 +21,8 @@
                 {
                     case WebElementTypes.Directory:
                         return element.FindResource("BaseInfo") as DataTemplate;
+                    case WebElementTypes.Page:
+                        return element.FindResource("PageInfo") as DataTemplate;
                     case WebElementTypes.Frame:
                     case WebElementTypes.Reference:
                         return element.FindResource("ElementWithReferenceInfo") as DataTemplate;

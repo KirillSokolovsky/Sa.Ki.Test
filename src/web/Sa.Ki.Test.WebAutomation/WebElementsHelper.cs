@@ -10,7 +10,8 @@
         public static WebSearchInfo BuildWebSearch(IWebElementInfo elementInfo)
         {
             //if it's directory, return null
-            if (elementInfo.ElementType == WebElementTypes.Directory) return null;
+            if (elementInfo.ElementType == WebElementTypes.Directory
+                || elementInfo.ElementType == WebElementTypes.Page) return null;
 
             var locator = elementInfo.Locator;
             WebSearchInfo searchInfo = null;
@@ -88,7 +89,8 @@
 
                 if (parent != null
                         && parent.ElementType != WebElementTypes.Frame
-                        && parent.ElementType != WebElementTypes.Directory)
+                        && parent.ElementType != WebElementTypes.Directory
+                        && parent.ElementType != WebElementTypes.Page)
                 {
                     var parentSearch = parent.GetWebSearch();
 
@@ -126,7 +128,8 @@
         public static void BuildWebSearchFrames(IWebElementInfo elementInfo, WebSearchInfo webSearchInfo)
         {
             var parent = elementInfo.Parent;
-            while (parent != null && parent.ElementType != WebElementTypes.Directory)
+            while (parent != null && parent.ElementType != WebElementTypes.Directory
+                && parent.ElementType != WebElementTypes.Page)
             {
                 if (parent.ElementType == WebElementTypes.Frame)
                 {

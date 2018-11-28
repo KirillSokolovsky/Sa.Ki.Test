@@ -213,7 +213,34 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="ElementWithReferenceInfo" DataType="{x:Type mdls:WebElementWithReferenceViewModel}">
+        <DataTemplate x:Key="PageInfo">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <ContentPresenter Grid.Row="0" 
+                                  Content="{Binding}" 
+                                  ContentTemplate="{StaticResource BaseInfo}">
+                </ContentPresenter>
+
+
+                <WrapPanel Grid.Row="1" Style="{StaticResource {x:Type WrapPanel}}">
+                    <Label>Name:</Label>
+                    <TextBox Text="{Binding DefaultUrl, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                </WrapPanel>
+
+                <WrapPanel Grid.Row="2" Style="{StaticResource {x:Type WrapPanel}}">
+                    <Label>Name:</Label>
+                    <TextBox Text="{Binding UrlRegexString, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                </WrapPanel>
+
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ElementWithReferenceInfo">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>

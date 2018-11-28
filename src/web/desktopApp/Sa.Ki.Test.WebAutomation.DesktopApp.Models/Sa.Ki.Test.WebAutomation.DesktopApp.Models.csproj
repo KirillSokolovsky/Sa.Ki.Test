@@ -111,6 +111,7 @@
     <Compile Include="WebElementsViewModelsHelper.cs" />
     <Compile Include="FrameWebLocatorInfoViewModel.cs" />
     <Compile Include="WebLocatorInfoViewModel.cs" />
+    <Compile Include="WebPageInfoViewModel.cs" />
     <Compile Include="WebSearchInfoModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

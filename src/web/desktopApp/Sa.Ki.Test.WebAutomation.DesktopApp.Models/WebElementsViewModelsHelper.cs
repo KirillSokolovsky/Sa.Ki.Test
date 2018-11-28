@@ -15,6 +15,8 @@
         {
             switch (elementInfo)
             {
+                case WebPageInfo wp:
+                    return new WebElementInfoViewModel(wp);
                 case WebElementReference re:
                     return new WebElementWithReferenceViewModel(re);
                 case FrameWebElementInfo wc:
@@ -89,6 +91,16 @@
                                 combined = new CombinedWebElementInfo();
                                 break;
 
+                            case WebElementTypes.Page:
+                                {
+                                    var wpModel = model as WebPageInfoViewModel;
+                                    var wpInfo = new WebPageInfo();
+                                    wpInfo.DefaultUrl = wpModel.DefaultUrl;
+                                    wpInfo.UrlRegexString = wpModel.UrlRegexString;
+                                    combined = wpInfo;
+                                }
+                                break;
+
                             default:
                                 throw new Exception($"Unexpected combinedModel.ElementType: {combinedModel.ElementType}");
                         }
@@ -119,6 +131,8 @@
         {
             switch (elementType)
             {
+                case WebElementTypes.Page:
+                    return new WebPageInfoViewModel();
                 case WebElementTypes.Directory:
                 case WebElementTypes.Context:
                 case WebElementTypes.Control:
@@ -257,7 +271,8 @@
         public static WebElementInfoViewModel CreateModelCopyWithBaseInfo(WebElementInfoViewModel model)
         {
             WebElementInfoViewModel copy = null;
-            var copyLocator = model.ElementType != WebElementTypes.Directory;
+            var copyLocator = model.ElementType != WebElementTypes.Directory
+                || model.ElementType != WebElementTypes.Page;
 
             if (model is WebElementWithReferenceViewModel referenced)
             {
@@ -374,7 +389,7 @@
                     = (baseInfo.Locator as FrameWebLocatorInfoViewModel).FrameLocatorType;
             }
 
-            if (model.ElementType != WebElementTypes.Directory
+            if (model.ElementType != WebElementTypes.Directory && model.ElementType != WebElementTypes.Page
                 && (!ifNotNullOnly || baseInfo.Locator != null))
             {
                 if (baseInfo.Locator != null)
@@ -397,7 +412,8 @@
         public static bool IsAnyParentReference(WebElementInfoViewModel model)
         {
             var parent = model?.Parent;
-            while (parent != null)
+            while (parent != null && parent.ElementType != WebElementTypes.Directory
+                && parent.ElementType != WebElementTypes.Page)
             {
                 if (parent is WebElementWithReferenceViewModel) return true;
                 parent = parent.Parent;

@@ -33,6 +33,9 @@
             if (isAnyParentRef)
                 key = "Reference";
 
+            if(elementInfo.ElementType == WebElementTypes.Reference)
+                key = $"Menu Items for {et} {p} ref";
+
             if (!_menusCache.ContainsKey(key))
             {
                 var items = new List<SaKiMenuItemViewModel>();
@@ -47,6 +50,10 @@
                     if (elementInfo != null)
                     {
                         items.Add(CreateCopyNameMenuItem());
+
+                        if(elementInfo.ElementType == WebElementTypes.Reference)
+                            items.Add(CreateGoToReferencedMenuItem());
+
                         items.Add(CreateEditMenuItem());
                     }
 
@@ -120,14 +127,17 @@
                 switch (elementType)
                 {
                     case "Root":
-                        group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Context));
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Directory));
+                        group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Page));
+                        group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Context));
                         break;
                     case WebElementTypes.Directory:
+                        group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Page));
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Context));
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Control));
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Directory));
                         break;
+                    case WebElementTypes.Page:
                     case WebElementTypes.Context:
                     case WebElementTypes.Control:
                         group.Items.Add(CreateCreateCommandMenuItem(WebElementTypes.Element));
@@ -156,8 +166,8 @@
                 switch (elementType)
                 {
                     case WebElementTypes.Context:
-                        description = $"Context WebElement is used to describe separate (relative to site) set of elements with own functionality." +
-                            $"{Environment.NewLine}E.g. Page, Header, Popup, Dialog etc.";
+                        description = $"Context WebElement is used to describe separate (relative to site) set of elements with own functionality. Similar to control" +
+                            $"{Environment.NewLine}E.g. Header, Menu, Popup, Dialog etc.";
                         break;
                     case WebElementTypes.Control:
                         description = $"Control WebElement is used to describe separate (relative to Context) set of elements with own functionality." +
@@ -181,7 +191,10 @@
                         description = $"Directory WebElement is used to separate set of web elements to some logig group";
                         break;
                     case WebElementTypes.Frame:
-                        description = $"Frame WebElement is used to describe child frame web element that contains some existed Context";
+                        description = $"Frame WebElement is used to describe child frame web element that contains some existed Context or Page";
+                        break;
+                    case WebElementTypes.Page:
+                        description = $"Page WebElement is used to describe separate Web Site Page";
                         break;
                     default:
                         MessageBox.Show($"Unknown element type: {elementType} to provide description");
@@ -224,6 +237,8 @@
                         group.Items.Add(CreateActionsCommandMenuItem("Cut"));
                         group.Items.Add(CreateActionsCommandMenuItem("Paste"));
                         break;
+
+                    case WebElementTypes.Page:
                     case WebElementTypes.Context:
 
                     case WebElementTypes.Frame:
