@@ -228,12 +228,12 @@
 
 
                 <WrapPanel Grid.Row="1" Style="{StaticResource {x:Type WrapPanel}}">
-                    <Label>Name:</Label>
+                    <Label>Default Url:</Label>
                     <TextBox Text="{Binding DefaultUrl, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </WrapPanel>
 
                 <WrapPanel Grid.Row="2" Style="{StaticResource {x:Type WrapPanel}}">
-                    <Label>Name:</Label>
+                    <Label>Url Regex:</Label>
                     <TextBox Text="{Binding UrlRegexString, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </WrapPanel>
 

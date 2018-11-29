@@ -33,7 +33,7 @@
             if (isAnyParentRef)
                 key = "Reference";
 
-            if(elementInfo.ElementType == WebElementTypes.Reference)
+            if(elementInfo != null && elementInfo.ElementType == WebElementTypes.Reference)
                 key = $"Menu Items for {et} {p} ref";
 
             if (!_menusCache.ContainsKey(key))

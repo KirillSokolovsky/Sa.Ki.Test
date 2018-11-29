@@ -18,22 +18,40 @@
 
         public override bool CanExecute(object parameter)
         {
-            return WebElementsViewModelsHelper.IsAnyParentReference(Selected);
+            return (Selected?.ElementType == WebElementTypes.Reference)
+                || WebElementsViewModelsHelper.IsAnyParentReference(Selected);
         }
 
         protected override void ExecuteCommand()
         {
             var refParent = GetReferencedParent(Selected) as WebElementWithReferenceViewModel;
-            if (refParent == null) return;
+            if (refParent == null && Selected.ElementType != WebElementTypes.Reference) return;
 
-            var refPath = refParent.GetTreePath();
+            var realPath = "";
             var elPath = Selected.GetTreePath();
 
-            var relativePath = elPath.Replace($"{refPath} > ", "");
-            var sourceParts = refParent.ReferenceBreadString.Split(new[] { " > " }, StringSplitOptions.RemoveEmptyEntries);
-            var sourcePath = string.Join(" > ", sourceParts.Take(sourceParts.Length - 1));
+            if (refParent == null)
+            {
+                realPath = (Selected as WebElementWithReferenceViewModel).ReferenceBreadString;
+            }
+            else
+            {
+                var refParentPath = refParent.GetTreePath();
+                var relativePath = elPath.Replace($"{refParentPath} > ", "");
 
-            var realPath = $"{sourcePath} > {relativePath}";
+                if (refParent.ElementType == WebElementTypes.Reference)
+                {
+                    realPath = $"{refParent.ReferenceBreadString} > {relativePath}";
+                }
+                else
+                {
+                    var sourceParts = refParent.ReferenceBreadString.Split(new[] { " > " }, StringSplitOptions.RemoveEmptyEntries);
+                    var sourcePath = string.Join(" > ", sourceParts.Take(sourceParts.Length - 1));
+
+                    realPath = $"{sourcePath} > {relativePath}";
+                }
+            }
+
 
             var newSelected = (WebElementInfoViewModel)_webElementsTreeUserControl.WebElements.FindNodeByTreePath(realPath);
             _webElementsTreeUserControl.SelectedWebElement = newSelected;

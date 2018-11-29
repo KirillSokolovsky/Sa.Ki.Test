@@ -29,6 +29,7 @@
                 return false;
             if (el.Parent.ElementType == WebElementTypes.Control 
                 || el.Parent.ElementType == WebElementTypes.Context
+                || el.Parent.ElementType == WebElementTypes.Page
                 || el.Parent.ElementType == WebElementTypes.Directory)
                 return true;
 
@@ -61,13 +62,20 @@
                 if (string.IsNullOrWhiteSpace(el.Description))
                     result.AppendLine("WebElement Description couldn't be empty");
 
-                var declineEmptyLocator = el.ElementType == WebElementTypes.Directory;
+                var declineEmptyLocator = el.ElementType == WebElementTypes.Directory
+                    || el.ElementType == WebElementTypes.Page;
+
                 if (el is WebElementWithReferenceViewModel wRefModel)
                 {
-                    declineEmptyLocator = wRefModel.HasLocator;
+                    declineEmptyLocator = !wRefModel.HasLocator;
+
+                    if(wRefModel.ElementType == WebElementTypes.Frame)
+                    {
+                        declineEmptyLocator = (wRefModel.Locator as FrameWebLocatorInfoViewModel).FrameLocatorType != FrameLocatorType.Locator;
+                    }
                 }
 
-                if (declineEmptyLocator && string.IsNullOrWhiteSpace(el.Locator.LocatorValue))
+                if (!declineEmptyLocator && string.IsNullOrWhiteSpace(el.Locator.LocatorValue))
                     result.AppendLine("WebElement Locator.LocatorValue couldn't be empty");
 
                 return result.ToString();

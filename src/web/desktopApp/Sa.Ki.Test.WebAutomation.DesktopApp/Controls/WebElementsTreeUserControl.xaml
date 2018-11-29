@@ -174,7 +174,7 @@
                     <Style TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                         <Setter Property="ToolTip" Value="{Binding Description}"></Setter>
                         <Setter Property="Visibility" Value="Visible"></Setter>
-                        <Setter Property="IsExpanded" Value="True"></Setter>
+                        <!--<Setter Property="IsExpanded" Value="True"></Setter>-->
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsVisible, UpdateSourceTrigger=PropertyChanged}" Value="False">
                                 <Setter Property="Visibility" Value="Collapsed"></Setter>

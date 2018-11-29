@@ -16,7 +16,7 @@
             switch (elementInfo)
             {
                 case WebPageInfo wp:
-                    return new WebElementInfoViewModel(wp);
+                    return new WebPageInfoViewModel(wp);
                 case WebElementReference re:
                     return new WebElementWithReferenceViewModel(re);
                 case FrameWebElementInfo wc:
@@ -272,7 +272,7 @@
         {
             WebElementInfoViewModel copy = null;
             var copyLocator = model.ElementType != WebElementTypes.Directory
-                || model.ElementType != WebElementTypes.Page;
+                && model.ElementType != WebElementTypes.Page;
 
             if (model is WebElementWithReferenceViewModel referenced)
             {
@@ -283,7 +283,17 @@
                     HasLocator = referenced.HasLocator
                 };
                 copy.Locator = null;
-                copyLocator = referenced.ElementType == WebElementTypes.Reference && referenced.HasLocator;
+                copyLocator =
+                    referenced.ElementType == WebElementTypes.Frame
+                    || (referenced.ElementType == WebElementTypes.Reference && referenced.HasLocator);
+            }
+            else if(model is WebPageInfoViewModel wpModel)
+            {
+                copy = new WebPageInfoViewModel
+                {
+                    UrlRegexString = wpModel.UrlRegexString,
+                    DefaultUrl = wpModel.DefaultUrl
+                };
             }
             else
             {
@@ -381,6 +391,15 @@
                     }
                 }
                 referenced.HasLocator = refsInfo.HasLocator;
+            }
+
+            if(model is WebPageInfoViewModel pModel
+                && baseInfo is WebPageInfoViewModel iModel)
+            {
+                if (!ifNotNullOnly || iModel.DefaultUrl != null)
+                    pModel.DefaultUrl = iModel.DefaultUrl;
+                if (!ifNotNullOnly || iModel.UrlRegexString != null)
+                    pModel.UrlRegexString = iModel.UrlRegexString;
             }
 
             if (model.ElementType == WebElementTypes.Frame)
