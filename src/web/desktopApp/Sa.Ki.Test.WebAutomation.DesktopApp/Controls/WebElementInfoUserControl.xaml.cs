@@ -61,9 +61,20 @@
                 return;
             }
 
+            var blockedTreePath = new List<string>();
+
+            var curParent = WebElement;
+            while (!(curParent?.Parent == null
+                || curParent.Parent.ElementType == WebElementTypes.Directory))
+                curParent = curParent.Parent;
+
+            blockedTreePath.Clear();
+            blockedTreePath.Add(curParent.GetTreePath());
+
             var picker = new WebElementPickerDialog(WebElements.ToList(),
+                WebElement.ElementType == WebElementTypes.Frame,
                 rm.ReferenceBreadString,
-                new List<string> { WebElement.GetTreePath() },
+                blockedTreePath,
                 WebElementsViewModelsHelper.GetBlockedElementTypesForElementType(rm.ElementType)
                 );
 
@@ -95,11 +106,11 @@
             if (rm.Elements == null)
                 rm.Elements = new ObservableCollection<WebElementInfoViewModel>();
 
-            if(rm.ElementType == WebElementTypes.Reference)
+            if (rm.ElementType == WebElementTypes.Reference)
             {
-                if(copy is CombinedWebElementInfoViewModel combinedRef)
+                if (copy is CombinedWebElementInfoViewModel combinedRef)
                 {
-                    if(combinedRef.Elements != null)
+                    if (combinedRef.Elements != null)
                     {
                         foreach (var c in combinedRef.Elements)
                         {

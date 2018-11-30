@@ -8,8 +8,8 @@ namespace Sa.Ki.Test.WebAutomation.Exceptions
     {
         public IWebElementInfo WebElementInfo { get; set; }
 
-        public SakiWebElementException(string message, IWebElementInfo webElementInfo, Exception innerException = null) 
-            : base(message, innerException)
+        public SakiWebElementException(string type, string message, IWebElementInfo webElementInfo, Exception innerException = null) 
+            : base(type, message, innerException)
         {
             WebElementInfo = webElementInfo;
         }

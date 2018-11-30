@@ -44,7 +44,8 @@
             if (values.All(v => v.parName == null)) //by index mode
             {
                 if (values.Length > locatorPlaceholders.Count)
-                    throw new SakiWebAutomationException($"Error occurred during dynamic locator resolving." +
+                    throw new SakiWebAutomationException(nameof(IDynamicWebLocatorResolver), 
+                        $"Error occurred during dynamic locator resolving." +
                         $"{Environment.NewLine}Parameters count is greater then placeholder number. {values.Length} > {locatorPlaceholders.Count}" +
                         $"{Environment.NewLine}Locator: {locator}" +
                         $"{Environment.NewLine}Parameters: {string.Join(", ", values.Select(v => $"{v.parName}: {v.parValue}"))}");
@@ -64,7 +65,8 @@
                     .Select(v => v.parName).ToList();
 
                 if (extra.Count > 0)
-                    throw new SakiWebAutomationException($"Error occurred during dynamic locator resolving." +
+                    throw new SakiWebAutomationException(nameof(IDynamicWebLocatorResolver),
+                        $"Error occurred during dynamic locator resolving." +
                         $"{Environment.NewLine}Found extra parameters: {string.Join(", ", extra)}" +
                         $"{Environment.NewLine}Locator: {locator}" +
                         $"{Environment.NewLine}Parameters: {string.Join(", ", values.Select(v => $"{v.parName}: {v.parValue}"))}");
@@ -73,7 +75,8 @@
                     .Select(v => v.parValue).ToList();
 
                 if (emptyNames.Count > 0)
-                    throw new SakiWebAutomationException($"Error occurred during dynamic locator resolving." +
+                    throw new SakiWebAutomationException(nameof(IDynamicWebLocatorResolver),
+                        $"Error occurred during dynamic locator resolving." +
                         $"{Environment.NewLine}Found parameters without names." +
                         $"{Environment.NewLine}Locator: {locator}" +
                         $"{Environment.NewLine}Parameters: {string.Join(", ", values.Select(v => $"{v.parName}: {v.parValue}"))}");

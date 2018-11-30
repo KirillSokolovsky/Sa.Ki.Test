@@ -23,7 +23,7 @@
 
             element.TreePathToReferencedElement = TreePathToReferencedElement;
 
-            return base.GetCopyWithoutParent(webElementInfo);
+            return base.GetCopyWithoutParent(element);
         }
     }
 }

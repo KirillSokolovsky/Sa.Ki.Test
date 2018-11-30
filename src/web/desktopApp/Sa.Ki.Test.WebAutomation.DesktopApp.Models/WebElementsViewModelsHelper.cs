@@ -215,6 +215,10 @@
                             i--;
                         }
                     }
+
+                    if (cwe.ElementType == WebElementTypes.Directory
+                        && (cwe.Elements == null || cwe.Elements.Count() == 0))
+                        return null;
                 }
             }
 
@@ -226,7 +230,7 @@
             switch (elementType)
             {
                 case WebElementTypes.Reference:
-                    return new List<string> { WebElementTypes.Reference };
+                    return new List<string> { WebElementTypes.Reference, WebElementTypes.Frame };
 
                 case WebElementTypes.Frame:
                     return new List<string>
@@ -287,7 +291,7 @@
                     referenced.ElementType == WebElementTypes.Frame
                     || (referenced.ElementType == WebElementTypes.Reference && referenced.HasLocator);
             }
-            else if(model is WebPageInfoViewModel wpModel)
+            else if (model is WebPageInfoViewModel wpModel)
             {
                 copy = new WebPageInfoViewModel
                 {
@@ -393,7 +397,7 @@
                 referenced.HasLocator = refsInfo.HasLocator;
             }
 
-            if(model is WebPageInfoViewModel pModel
+            if (model is WebPageInfoViewModel pModel
                 && baseInfo is WebPageInfoViewModel iModel)
             {
                 if (!ifNotNullOnly || iModel.DefaultUrl != null)
@@ -431,13 +435,21 @@
         public static bool IsAnyParentReference(WebElementInfoViewModel model)
         {
             var parent = model?.Parent;
-            while (parent != null && parent.ElementType != WebElementTypes.Directory
-                && parent.ElementType != WebElementTypes.Page)
+            while (parent != null && parent.ElementType != WebElementTypes.Directory)
             {
                 if (parent is WebElementWithReferenceViewModel) return true;
                 parent = parent.Parent;
             }
             return false;
+        }
+
+        public static void UpdateAllReferences(ObservableCollection<CombinedWebElementInfoViewModel> webElements, WebElementInfoViewModel sourceWebElement)
+        {
+            //find all els with refs
+
+
+            //find all that should be updated
+            //update
         }
     }
 }

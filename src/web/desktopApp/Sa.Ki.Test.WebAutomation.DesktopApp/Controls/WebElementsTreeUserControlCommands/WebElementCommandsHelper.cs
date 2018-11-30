@@ -12,7 +12,7 @@
         public static bool CanElementHasCustomChildren(WebElementInfoViewModel elementInfo)
         {
             return
-              elementInfo == null //It's a tree view root, so we could add at least Context
+              elementInfo == null
               || (elementInfo is CombinedWebElementInfoViewModel
                   && !(elementInfo.ElementType == WebElementTypes.DropDown 
                         || elementInfo.ElementType == WebElementTypes.RadioGroup 

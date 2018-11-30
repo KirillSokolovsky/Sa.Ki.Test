@@ -24,7 +24,8 @@
                 {
                     //Reference shouldn't be null
                     if (elWithRef.ReferencedElement == null)
-                        throw new SakiWebElementException($"Element with type: {elementInfo.ElementType} has nullable reference", elementInfo);
+                        throw new SakiWebElementException(nameof(BuildWebSearch), 
+                            $"Element with type: {elementInfo.ElementType} has nullable reference", elementInfo);
 
                     if (elWithRef.Locator == null)
                         locator = elWithRef.ReferencedElement.Locator;
@@ -48,9 +49,11 @@
                             return searchInfo;
                         }
                     }
-                    else throw new SakiWebElementException($"Frame element has non frame locator.", elementInfo);
+                    else throw new SakiWebElementException(nameof(BuildWebSearch),
+                            $"Frame element has non frame locator.", elementInfo);
                 }
-                else throw new SakiWebElementException($"Unknown element with reference. Element type {elementInfo.ElementType}", elementInfo);
+                else throw new SakiWebElementException(nameof(BuildWebSearch),
+                            $"Unknown element with reference. Element type {elementInfo.ElementType}", elementInfo);
             }
 
             searchInfo = searchInfo
@@ -73,17 +76,20 @@
                         {
                             var refed = parentRefs.ReferencedElement;
                             if(refed == null)
-                                throw new SakiWebElementException($"Referenced element in parent is NULL.", elementInfo);
+                                throw new SakiWebElementException(nameof(BuildWebSearch),
+                                    $"Referenced element in parent is NULL.", elementInfo);
 
                             if (elementInfo == refed)
                                 parent = parent.Parent;
                             else if(refed is ICombinedWebElementInfo refedCombined)
                                 parent = refedCombined;
                             else
-                                throw new SakiWebElementException($"Referenced element in parent is not a combined element.", elementInfo);
+                                throw new SakiWebElementException(nameof(BuildWebSearch),
+                                    $"Referenced element in parent is not a combined element.", elementInfo);
                         }
                         else
-                            throw new SakiWebElementException($"Element with type Reference is not a reference.", elementInfo);
+                            throw new SakiWebElementException(nameof(BuildWebSearch),
+                                    $"Element with type Reference is not a reference.", elementInfo);
                     }
                 }
 

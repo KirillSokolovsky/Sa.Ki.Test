@@ -104,6 +104,7 @@
                         var blockedTypesToPick = WebElementsViewModelsHelper.GetBlockedElementTypesForElementType(_elementType);
 
                         var picker = new WebElementPickerDialog(_webElementsTreeUserControl.WebElements.ToList(),
+                            true,
                             null,
                             null,
                             blockedTypesToPick);
@@ -155,6 +156,7 @@
             var blockedTypesToPick = WebElementsViewModelsHelper.GetBlockedElementTypesForElementType(_elementType);
 
             var picker = new WebElementPickerDialog(_webElementsTreeUserControl.WebElements.ToList(),
+                false,
                 null,
                 null,
                 blockedTypesToPick);

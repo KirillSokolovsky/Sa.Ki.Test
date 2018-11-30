@@ -71,8 +71,11 @@
             var model = new TempModel();
             model.WebElements = new ObservableCollection<CombinedWebElementInfoViewModel>();
 
-            _webElementsRepository.WebElements.ForEach(wc =>
-                model.WebElements.Add(new CombinedWebElementInfoViewModel(wc)));
+            foreach (var wc in _webElementsRepository.WebElements)
+            {
+                var cmbModel = (CombinedWebElementInfoViewModel)WebElementsViewModelsHelper.CreateModelFromInfo(wc);
+                model.WebElements.Add(cmbModel);
+            }
 
             //for (int i = 1; i < 5; i++)
             //{
@@ -99,6 +102,7 @@
             var dc = DataContext as TempModel;
 
             var d = new WebElementPickerDialog(dc.WebElements.ToList(),
+                false,
                 null,
                 null,
                 new List<string> { WebElementTypes.DropDown });

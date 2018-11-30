@@ -64,8 +64,10 @@
             if (_sb == null)
             {
                 _sb = new StringBuilder();
+                _sb.Append(GetType().Name);
+                _sb.Append(" | ");
                 _sb.Append(ElementType);
-                _sb.Append(" ");
+                _sb.Append(" > ");
                 _sb.Append(Name);
 
                 if (Parent != null)

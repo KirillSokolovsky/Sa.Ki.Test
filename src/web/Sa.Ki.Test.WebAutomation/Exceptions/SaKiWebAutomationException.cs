@@ -7,8 +7,8 @@
 
     public class SakiWebAutomationException : SaKiException
     {
-        public SakiWebAutomationException(string message, Exception innerException = null) 
-            : base(nameof(WebAutomation), message, innerException)
+        public SakiWebAutomationException(string type, string message, Exception innerException = null) 
+            : base($"WebAutomation.{type}", message, innerException)
         {
         }
     }

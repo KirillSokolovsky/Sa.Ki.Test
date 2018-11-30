@@ -55,7 +55,7 @@
             }
             catch (Exception ex)
             {
-                throw SaKiWebdriverException.ErrorDuring("WebDriver creation", ex);
+                throw SaKiWebDriverException.ErrorDuring("WebDriver creation", ex);
             }
 
             try
@@ -68,7 +68,7 @@
             }
             catch(Exception ex)
             {
-                throw SaKiWebdriverException.ErrorDuring("WebDriver creation", ex);
+                throw SaKiWebDriverException.ErrorDuring("WebDriver creation", ex);
             }
 
             return _driver;
@@ -151,7 +151,7 @@
                 }
                 catch (Exception ex)
                 {
-                    var err = new SaKiWebElementException("WebElement could't be found", elementInfo, ex);
+                    var err = new SaKiWebElementException(nameof(FindElement), "WebElement could't be found", elementInfo, ex);
                     log?.ERROR(err.Message, err);
                     throw err;
                 }

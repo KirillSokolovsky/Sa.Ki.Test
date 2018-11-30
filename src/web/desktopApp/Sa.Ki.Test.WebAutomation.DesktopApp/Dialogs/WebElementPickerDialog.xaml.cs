@@ -52,12 +52,17 @@
         public static readonly DependencyProperty OriginalWebElementTreePathProperty =
             DependencyProperty.Register("OriginalWebElementTreePath", typeof(string), typeof(WebElementPickerDialog), new PropertyMetadata(null));
 
+        private bool _isReferenceForFrame;
+
         public WebElementPickerDialog(
             List<CombinedWebElementInfoViewModel> contexts,
+            bool isReferenceForFrame,
             string originalWebElementTreePath = null,
             List<string> blockedElementsBreadStrings = null,
             List<string> blockedElementTypes = null)
         {
+            _isReferenceForFrame = isReferenceForFrame;
+
             InitializeComponent();
 
             DataContext = this;
@@ -73,6 +78,7 @@
             IsEditMode = originalWebElementTreePath != null;
 
             WebElements = new ObservableCollection<CombinedWebElementInfoViewModel>();
+
             foreach (var context in contexts)
             {
                 var info = WebElementsViewModelsHelper.CreateInfoFromModel(context);
@@ -114,6 +120,11 @@
             if (element.ElementType == WebElementTypes.Directory)
             {
                 MessageBox.Show("Directory couldn't be selected.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if(!_isReferenceForFrame && element.ElementType == WebElementTypes.Page)
+            {
+                MessageBox.Show("Page couldn't be selected to be referenced.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             DialogResult = true;

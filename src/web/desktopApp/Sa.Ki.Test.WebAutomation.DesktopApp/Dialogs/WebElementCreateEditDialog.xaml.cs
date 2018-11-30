@@ -110,6 +110,7 @@ namespace Sa.Ki.Test.WebAutomation.DesktopApp.Dialogs
             if (IsEditMode)
             {
                 WebElementsViewModelsHelper.FillModelWithBaseInfo(SourceWebElement, WebElement);
+                WebElementsViewModelsHelper.UpdateAllReferences(WebElements, SourceWebElement);
                 WebElement = SourceWebElement;
             }
 
